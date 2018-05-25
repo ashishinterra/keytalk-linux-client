@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/" >
+      <file>../librclientappcommon/rclient/logo.png</file>
+      <file>../librclientappcommon/rclient/resept_ico.ico</file>
+    </qresource>
+</RCC>

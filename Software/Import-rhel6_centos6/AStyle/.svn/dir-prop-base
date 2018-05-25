@@ -1,0 +1,11 @@
+K 10
+svn:ignore
+V 46
+regress
+cfg
+doc-old
+src-old
+srcObjC
+srcThread
+
+END

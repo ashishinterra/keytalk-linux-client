@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/p/astyle/code/!svn/ver/639/trunk/AStyle/build/clang
+END
+copyfiles.sh
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/astyle/code/!svn/ver/359/trunk/AStyle/build/clang/copyfiles.sh
+END
+analyze.sh
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/astyle/code/!svn/ver/359/trunk/AStyle/build/clang/analyze.sh
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/astyle/code/!svn/ver/639/trunk/AStyle/build/clang/Makefile
+END

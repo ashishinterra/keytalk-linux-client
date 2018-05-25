@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include ReseptClientInstaller.wxi ?>
+  <Product Name="$(var.ProductName) $(var.MajorVersion).$(var.MinorVersion)"
+           Id="$(var.ProductCode)"
+           UpgradeCode="$(var.UpgradeCode)"
+           Language="1033"
+           Codepage="1252"
+           Version="$(var.MajorVersion).$(var.MinorVersion).$(var.SubminorVersion)"
+           Manufacturer="$(var.ManufacturerName)">
+
+  <Package Id="*"
+           InstallScope="perMachine"
+           Description="$(var.ManufacturerName) $(var.ProductName) Installer"
+           Comments="$(var.ProductName) is a registered trademark of $(var.ManufacturerName)"
+           Manufacturer="$(var.ManufacturerName)"
+           InstallerVersion="300"
+           Languages="1033"
+           Compressed="yes"
+           SummaryCodepage="1252" />
+
+    <Media Id="1" Cabinet="Sample.cab" EmbedCab="yes"/>
+
+    <Property Id="Product" Value="$(var.ProductName)" />
+
+    <!-- More information on install states: https://msdn.microsoft.com/en-us/library/aa368012(VS.85).aspx -->
+    <Property Id="INSTALLSTATE_UNKNOWN" Value="-1" />
+    <Property Id="INSTALLSTATE_ADVERTISED" Value="1" />
+    <Property Id="INSTALLSTATE_ABSENT" Value="2" />
+    <Property Id="INSTALLSTATE_LOCAL" Value="3" />
+    <Property Id="INSTALLSTATE_SOURCE" Value="4" />
+
+    <!-- Upgrades
+      @note we schedule RemoveExistingProducts after InstallInitialize because it gives transactional behavior (i.e. if upgrade fails, msi will roll back the removal of the installed product) -->
+
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed. Please uninstall $(var.ProductName) if you wish to downgrade."
+      Schedule="afterInstallInitialize"
+     />
+    <!-- Disallow upgrading from old pre-4.3 and 3.x installations because they cannot correctly handle the fact of being upgraded -->
+    <Property Id="PRE43_INSTALLATION_DISPLAY_NAME">
+      <RegistrySearch Id="Pre43InstallationDisplayNameSearch" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\{$(var.Pre43ProductCode)}" Name="DisplayName" Type="raw" />
+    </Property>
+    <Property Id="PRE43_INSTALLATION_MAJOR_VERSION">
+      <RegistrySearch Id="Pre43InstallationMajorVersionSearch" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\{$(var.Pre43ProductCode)}" Name="VersionMajor" Type="raw" />
+    </Property>
+    <!-- @notice Meessage is displayed when condition fails-->
+    <Condition Message="Setup has detected that [PRE43_INSTALLATION_DISPLAY_NAME] is already installed. Please uninstall [PRE43_INSTALLATION_DISPLAY_NAME] before installing $(var.ProductName).">
+        Installed OR NOT PRE43_INSTALLATION_MAJOR_VERSION
+    </Condition>
+
+
+    <!--Disable 'change' button on the installed product because we don't implement correct 'change' behavior -->
+    <Property Id="ARPNOMODIFY">1</Property>
+
+
+    <Property Id="IEINSTALLED">
+      <DirectorySearch Id="IeDirSearch" Path="[ProgramFilesFolder]\Internet Explorer\" Depth="3">
+        <FileSearch Name="iexplore.exe" />
+      </DirectorySearch>
+    </Property>
+    <WixVariable Id="WixUIBannerBmp" Value="Bitmaps\banner.bmp" Overridable="no"/>
+    <WixVariable Id="WixUIDialogBmp" Value="Bitmaps\dialog.bmp" Overridable="no"/>
+
+    <Condition Message="$(var.ProductName)-$(var.MajorVersion).$(var.MinorVersion) is only supported on Windows XP SP3, Windows Server 2003 and higher.">
+      <![CDATA[Installed OR ((VersionNT = 501 AND ServicePackLevel >= 3) OR (VersionNT >= 502))]]>
+    </Condition>
+
+    <!-- Define the installation directory structure -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="RESEPTINSTALLDIR" Name="$(var.ProductName)">
+          <Directory Id="RESEPTINSTALLDIR_QT_DEPS" Name="platforms" />
+          <Directory Id="SCRIPTSDIR" Name="Scripts" />
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ReseptProgramMenuDir" Name="$(var.ProductName) $(var.MajorVersion).$(var.MinorVersion)" />
+      </Directory>
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="RESEPTCOMMONAPPDATADIR" Name="$(var.ManufacturerName)" />
+      </Directory>
+      <Directory Id="DesktopFolder"/>
+
+      <Component Id="EmptyComp" Guid="A3B7EB09-BC61-4911-8C8A-DC62F4719739" DiskId="1" />  <!--See further what EmptyComp is for-->
+    </Directory>
+
+
+    <!-- Put components into the directory structure defined above -->
+    <DirectoryRef Id="RESEPTINSTALLDIR">
+      <Component Id="ReseptMainAppComp" Guid="6C24D44C-4C30-42d9-856E-3D2D0175A2CC" DiskId="1">
+        <File Id="RESEPTDESKTOPCLNT"  Source="$(var.ReseptSourceDir)\ReseptDesktopClient.exe" Vital="yes" Checksum="yes"/>
+        <File Id="RESEPTCONFIGMAN"    Source="$(var.ReseptSourceDir)\ReseptConfigManager.exe" Vital="yes" Checksum="yes"/>
+        <File Id="RESEPTPRGEN"        Source="$(var.ReseptSourceDir)\ReseptPrGenerator.exe" Vital="yes" Checksum="yes"/>
+        <File Id="LOGGING"            Source="$(var.ReseptSourceDir)\libtalogger.dll" Vital="yes" Checksum="yes"/>
+        <File Id="SWEEPER"            Source="$(var.ReseptSourceDir)\Sweeper.exe" Vital="yes" Checksum="yes"/>
+        <File Id="CONFIGUPDATER"      Source="$(var.ReseptSourceDir)\ConfigUpdater.exe"  Vital="yes" Checksum="yes"/>
+        <File Id="IEUSEREXERESTARTER" Source="$(var.ReseptSourceDir)\IeUserExeRestarter.exe"  Vital="yes" Checksum="yes"/>
+        <File Id="MESSAGEBOXMANAGER"  Source="$(var.ReseptSourceDir)\MessageBoxManager.exe"  Vital="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="ReseptConfigToolComp" Guid="{D36FCAA1-2F71-4BC1-B514-477551D0A212}">
+        <File Id="RESEPTCONFIGTOOL"  Source="$(var.ReseptSourceDir)\ReseptConfigTool.exe" Vital="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="ReseptConsoleClientComp" Guid="{62CB0944-A806-4f13-B578-D89E248CFA67}">
+        <File Id="RESEPTCONSOLECLNT"  Source="$(var.ReseptSourceDir)\ReseptConsoleClient.exe" Vital="yes" Checksum="yes"/>
+        <File Id="CRFILE"  Source="..\..\..\ReseptConsoleClient\cr.conf" Vital="yes"/>
+      </Component>
+      <Component Id="ReseptBrokerServiceComp" Guid="{E90FAF99-5D1A-4d2c-8D34-BDBC4EB5C7E3}">
+        <File Id="RESEPTBROKERSERVICE" Source="$(var.ReseptSourceDir)\ReseptBrokerService.exe" Vital="yes" KeyPath="yes" Checksum="yes"/>
+          <!-- Remove logs here i.o. using custom action because the latter may fail if the service is not uninstalled yet, so we should do it afterwards => extra complexity...-->
+          <RemoveFile Id="RESEPTBROKERSERVICELOG" Directory ="RESEPTCOMMONAPPDATADIR" Name ="ktbrokerservice.log*" On="uninstall"/>
+          <RemoveFile Id="RESEPTBROKERSERVICEEXTRALOGS" Directory ="RESEPTCOMMONAPPDATADIR" Name ="ktbrokerservice.log.*" On="uninstall"/>
+          <ServiceInstall Id="RESEPTBROKERSERVICEINSTALLER" Type="ownProcess" Vital="yes" Name="ReseptBrokerService" DisplayName="$(var.ProductName) Broker Service"
+                        Description="Allows non-privileged user customizing $(var.ProductName) installations"  Start="auto"  Account="LocalSystem" ErrorControl="normal" Interactive="no">
+        </ServiceInstall>
+        <ServiceControl Id="StartReseptBrokerService" Start="install" Stop="both" Remove="uninstall" Name="ReseptBrokerService" Wait="yes" />
+      </Component>
+      <!-- @note all changes to BHO names below must be in sync with ReseptIeClient sources -->
+      <Component Id="IeBhoComp" Guid="{310B3105-DE78-4B32-AB3A-2C8268E947CF}">
+        <AppId Description="$(var.ProductName)IeClient" Id="{1A8DF225-9750-4637-A78D-26FE8DACD0AE}" />
+        <File Id="fil6C24120C4CCD9C7847F2A08ABCB2D115" KeyPath="yes" Source="$(var.ReseptSourceDir)\ReseptIeClient.dll" Checksum="yes">
+
+          <TypeLib Id="{1A8DF225-9750-4637-A78D-26FE8DACD0AE}" Description="$(var.ProductName)IeBHO 1.0 Type Library" HelpDirectory="RESEPTINSTALLDIR" Language="0" MajorVersion="1" MinorVersion="0">
+            <Class Id="{B40D0B13-9A70-4394-8F21-E2E4AE3A9BC4}" Context="InprocServer32" Description="$(var.ProductName)IeClient Object" ThreadingModel="apartment" Programmable="yes">
+              <ProgId Id="$(var.ProductName)IeClient.$(var.ProductName)IeClient.1.0" Description="$(var.ProductName)IeClient Object">
+                <ProgId Id="$(var.ProductName)IeClient.$(var.ProductName)IeClient" Description="$(var.ProductName)IeClient Object" />
+              </ProgId>
+            </Class>
+            <Interface Id="{8907D20B-6A91-48EA-A6DE-8076B2ACB313}" Name="IReseptLoader" ProxyStubClassId="{00020424-0000-0000-C000-000000000046}" ProxyStubClassId32="{00020424-0000-0000-C000-000000000046}" />
+          </TypeLib>
+        </File>
+        <File Id="IEBROKER" Source="$(var.ReseptSourceDir)\ReseptIeBroker.exe" Vital="yes" Checksum="yes"/>
+        <RegistryValue Root="HKCR" Key="AppID\ReseptLoader.DLL" Name="AppID" Value="" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Internet Explorer\Low Rights\ElevationPolicy\{3F940677-A702-47b2-88EE-9FDB95019B96}" Value="" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Internet Explorer\Low Rights\ElevationPolicy\{3F940677-A702-47b2-88EE-9FDB95019B96}" Name="AppName" Value="ReseptIeBroker.exe" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Internet Explorer\Low Rights\ElevationPolicy\{3F940677-A702-47b2-88EE-9FDB95019B96}" Name="AppPath" Value="[RESEPTINSTALLDIR]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Internet Explorer\Low Rights\ElevationPolicy\{3F940677-A702-47b2-88EE-9FDB95019B96}" Name="Policy" Value="3" Type="integer" Action="write" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\{B40D0B13-9A70-4394-8F21-E2E4AE3A9BC4}" Value="$(var.ProductName) IE BHO" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\{B40D0B13-9A70-4394-8F21-E2E4AE3A9BC4}" Name="NoExplorer" Value="1" Type="integer" Action="write" />
+      </Component>
+      <Component Id="VcRuntimeLibsComp" Guid="EA2843F4-1950-4BD6-9BF8-3C9810289CD2" DiskId="1">
+        <File Id="MSVCM120DLL" Source="$(var.ReseptSourceDir)\msvcp120.dll"  Vital="yes" Checksum="yes"/>
+        <File Id="MSVCP120DLL" Source="$(var.ReseptSourceDir)\msvcr120.dll"  Vital="yes" Checksum="yes"/>
+        <File Id="VCCORLIB120DLL" Source="$(var.ReseptSourceDir)\vccorlib120.dll"  Vital="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="QtLibComp" Guid="F86BF870-7FF6-459f-9C64-A8E762087F77" DiskId="1">
+        <File Id="QTCORE" Source="$(var.ReseptSourceDir)\Qt5Core.dll" Vital="yes" Checksum="yes"/>
+        <File Id="QTGUI" Source="$(var.ReseptSourceDir)\Qt5Gui.dll" Vital="yes" Checksum="yes"/>
+        <File Id="QTWIDGETS" Source="$(var.ReseptSourceDir)\Qt5Widgets.dll" Vital="yes" Checksum="yes"/>
+        <File Id="ICUDT" Source="$(var.ReseptSourceDir)\icudt54.dll" Vital="yes" Checksum="yes"/>
+        <File Id="ICUIN" Source="$(var.ReseptSourceDir)\icuin54.dll" Vital="yes" Checksum="yes"/>
+        <File Id="ICUUC" Source="$(var.ReseptSourceDir)\icuuc54.dll" Vital="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="ZLibComp" Guid="86AABF61-2EEB-46a8-B705-169085210439" DiskId="1">
+        <File Id="ZLIB" Source="$(var.ReseptSourceDir)\zlibwapi.dll" Vital="yes" Checksum="yes"/>
+      </Component>
+      <Component Id="EnvVariablesComp" Guid="97980251-48CA-4883-B298-4216E057E812" DiskId="1">
+        <CreateFolder/>
+        <Environment Id="ReseptPathEnvVar" Action="set" Name="Path" Value="[RESEPTINSTALLDIR]" Part="first" Permanent="no" System="yes"/>
+      </Component>
+      <Component Id="SilentRunnerComp" Guid="F5D8B609-B610-4C08-B45D-BE51CB12F5DD" DiskId="1">
+        <File Id="SILENTRUNNER"  Source="$(var.ReseptSourceDir)\RunSilent.vbs" Vital="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="RESEPTCOMMONAPPDATADIR">
+       <Component Id="ReseptSettingsComp" Guid="6DDD18ED-BF5D-4159-A6E3-5F503A30E812" DiskId="1">
+         <File Id="RESEPT_SETTINGS" Source="..\..\resept.ini" Name="resept.ini"  Vital="yes"/>
+       </Component>
+       <Component Id="ReseptVersionComp" Guid="572B2977-1AB9-4922-8B7D-C578F4331925" DiskId="1">
+         <File Id="VERSIONFILE"   Source="..\..\..\..\version" Vital="yes"/>
+         <File Id="DEVSTAGEFILE"  Source="..\..\..\..\devstage" Vital="yes"/>
+       </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="RESEPTINSTALLDIR_QT_DEPS">
+      <Component Id="QtDepsComp" Guid="A786AC23-2437-44EB-A54D-D45149881079" DiskId="1">
+        <File Id="QTWINDOWS" Source="$(var.ReseptSourceDir)\platforms\qwindows.dll" Vital="yes" Checksum="yes"/>
+      </Component>
+    </DirectoryRef>
+
+
+    <!-- Add shortcuts -->
+    <DirectoryRef Id="ReseptProgramMenuDir">
+      <Component Id="ReseptProgramMenuShortcutComp" Guid="8F6B54A5-A3CB-4e2d-826B-B8570603CA5A">
+        <Shortcut Id="ReseptStartMenuShortcut" Name="$(var.ProductName) $(var.MajorVersion).$(var.MinorVersion)" Description="Launch $(var.ProductName) Standalone Client" Target="[RESEPTINSTALLDIR]ReseptDesktopClient.exe" WorkingDirectory="RESEPTINSTALLDIR" />
+        <Shortcut Id="ReseptConfigManStartMenuShortcut" Name="$(var.ProductName) Configuration Manager" Target="[RESEPTINSTALLDIR]ReseptConfigManager.exe" WorkingDirectory="RESEPTINSTALLDIR" />
+        <Shortcut Id="ReseptPrGeneratorStartMenuShortcut" Name="$(var.ProductName) Problem Report Generator" Target="[RESEPTINSTALLDIR]ReseptPrGenerator.exe" WorkingDirectory="RESEPTINSTALLDIR" />
+        <Shortcut Id="ReseptUninstallShortcut" Name="Uninstall $(var.ProductName)" Description="Uninstall $(var.ProductName)" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]"/>
+        <RemoveFolder Id="ReseptProgramMenuDir" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\$(var.ManufacturerName)\$(var.ProductName)" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ReseptDesktopShortcutComp" Guid="D15657BB-C2D2-41d1-9B83-9818D3129524">
+        <Shortcut Id="ReseptDesktopShortcut" Name="$(var.ProductName) $(var.MajorVersion).$(var.MinorVersion)" Description="Launch $(var.ProductName) Standalone Client" Target="[RESEPTINSTALLDIR]ReseptDesktopClient.exe" WorkingDirectory="RESEPTINSTALLDIR" Advertise="no" />
+        <RegistryKey Root="HKCU" Key="Software\$(var.ManufacturerName)\$(var.ProductName)" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+          <RegistryValue Name="DesktopShortcut" Value="1" Type="integer" KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Scripts directory for scheduled tasks -->
+    <DirectoryRef Id="SCRIPTSDIR">
+      <Component Id="ScriptsDirComp" Guid="41512D02-86CC-4AEF-B904-E91749BF2E2A">
+        <CreateFolder />
+      </Component>
+      <Component Id="IISCertificateUpdateScriptComp" Guid="990A5E17-E46F-4025-91B8-FE1FDBF4CEBE" DiskId="1">
+        <File Id="IISCERTUPDATESCRIPT"  Source="$(var.ReseptSourceDir)\UpdateIISCertificate.ps1" Vital="yes"/>
+      </Component>
+      <Component Id="ScheduledScriptsRunnerComp" Guid="535D1D31-E2E3-4646-9EC2-95A8AA285A1E" DiskId="1">
+        <File Id="SCHEDULEDSCRIPTSRUNNER"  Source="$(var.ReseptSourceDir)\RunScheduledScripts.ps1" Vital="yes"/>
+      </Component>
+      <Component Id="PowershellUtilsScriptComp" Guid="4DA807EC-88F0-4669-9058-DAB03647F99D" DiskId="1">
+        <File Id="POWERSHELLUTILSSCRIPT"  Source="$(var.ReseptSourceDir)\KeyTalkUtils.psm1" Vital="yes"/>
+      </Component>
+    </DirectoryRef>
+
+
+    <!-- Features dialog -->
+    <Feature Id="Complete" Title="$(var.ProductName) $(var.MajorVersion).$(var.MinorVersion)" Description="The complete package." Level="1" Absent="disallow" ConfigurableDirectory="RESEPTINSTALLDIR" Display="expand" InstallDefault="local" AllowAdvertise="no">
+      <!--By adding empty component below to the parent feature we workaround Windows Installer bug when 'install from the network' menu is displayed irrespective on the attributes we specified for the feature -->
+      <ComponentRef Id="EmptyComp" />
+      <Feature Id="CoreFeature" Title="$(var.ProductName) Core" Description="$(var.ProductName) UI and Console clients, no browser add-ons." Level="1" Absent="disallow" InstallDefault="local" AllowAdvertise="no">
+        <ComponentRef Id="VcRuntimeLibsComp" />
+        <ComponentRef Id="EnvVariablesComp" />
+        <ComponentRef Id="QtLibComp" />
+        <ComponentRef Id="QtDepsComp" />
+        <ComponentRef Id="ZLibComp" />
+        <ComponentRef Id="ReseptMainAppComp" />
+        <ComponentRef Id="ReseptSettingsComp" />
+        <ComponentRef Id="ReseptVersionComp" />
+        <ComponentRef Id="ReseptBrokerServiceComp" />
+        <ComponentRef Id="ReseptProgramMenuShortcutComp" />
+        <ComponentRef Id="ReseptDesktopShortcutComp" />
+        <ComponentRef Id="ReseptConsoleClientComp" />
+        <ComponentRef Id="SilentRunnerComp" />
+      </Feature>
+      <Feature Id="IeFeature" Title="$(var.ProductName) IE add-on" Description="$(var.ProductName) Microsoft Internet Explorer add-on." Level="1" Absent="allow" InstallDefault="local" AllowAdvertise="no">
+        <Condition Level="0">NOT IEINSTALLED AND NOT REMOVE</Condition>
+        <ComponentRef Id="IeBhoComp" />
+      </Feature>
+      <Feature Id="IISCertificateUpdateScript" Title="IIS HTTPS certificate renewal" Description="Installs scheduled task to automatically renew an IIS HTTPS binding certificate using $(var.ProductName) SSL certificates. Note: This feature requires Powershell 3 or higher." Level="101" Absent="allow" InstallDefault="local" AllowAdvertise="no">
+        <ComponentRef Id="IISCertificateUpdateScriptComp" />
+        <ComponentRef Id="ScheduledScriptsRunnerComp" />
+        <ComponentRef Id="PowershellUtilsScriptComp" />
+        <ComponentRef Id="ScriptsDirComp" />
+        <ComponentRef Id="ReseptConfigToolComp" />
+      </Feature>
+    </Feature>
+
+    <!-- If RCCDPATH=<path-to-rccd> is supplied in the msiexec command line MSI will trigger LaunchConfigManNoUi at the end of installation and all errors would automatically trigger uninstallation.
+        Otherwise the user will be given a chance to trigger LaunchConfigManUI on demand from "Exit" dialog
+        @note LaunchConfigManUI will not be triggered during silent installations (i.e msiexec with /qn option)
+        even if RCCDPATH is not specified because silent installation skips UI execute sequence responsible for triggering LaunchConfigManUI
+     -->
+    <Property Id="RCCDPATH" Secure="yes"/>
+
+    <!-- @note immediate CA impersonates the invoking user (i.e. is executed in the user context) ignoring 'Impersonate' flag -->
+    <CustomAction Id="UpdateReseptConfig"    Execute="commit"    Return="check"       Impersonate="no"  FileKey="CONFIGUPDATER"      ExeCommand='--set-install-dir "[RESEPTINSTALLDIR]"' />
+    <CustomAction Id="RestoreData"           Execute="commit"    Return="check"       Impersonate="no"  FileKey="CONFIGUPDATER"      ExeCommand='--restore-data' />
+    <CustomAction Id="RemindToCloseIE"       Execute="commit"    Return="check"       Impersonate="no"  FileKey="MESSAGEBOXMANAGER"  ExeCommand='iexplore.exe "Installation succeeded" "$(var.ProductName) has been successfully installed. You should restart Internet Explorer to make use of $(var.ProductName) secure connections"' />
+    <CustomAction Id="RestartIeUserExe"      Execute="commit"    Return="check"       Impersonate="no"  FileKey="IEUSEREXERESTARTER" ExeCommand='' />
+    <CustomAction Id="UninstallUserData"     Execute="immediate" Return="check"       Impersonate="yes" FileKey="SWEEPER"            ExeCommand='--remove-userdata' />
+    <CustomAction Id="UninstallCommonData"   Execute="deferred"  Return="check"       Impersonate="no"  FileKey="SWEEPER"            ExeCommand='--remove-commondata' />
+    <CustomAction Id="BackupData"            Execute="deferred"  Return="check"       Impersonate="no"  FileKey="SWEEPER"            ExeCommand='--backup-data' />
+    <CustomAction Id="UninstallProviderData" Execute="deferred"  Return="check"       Impersonate="no"  FileKey="SWEEPER"            ExeCommand='--remove-providerdata' />
+    <CustomAction Id="LaunchConfigManUI"     Execute="immediate" Return="asyncNoWait" Impersonate="yes" FileKey="RESEPTCONFIGMAN"    ExeCommand=''/>
+    <CustomAction Id="LaunchConfigManNoUi"   Execute="commit"    Return="check"       Impersonate="yes" FileKey="RESEPTCONFIGMAN"    ExeCommand='--rccd-path "[RCCDPATH]"'/>
+    <CustomAction Id="CA_WIXUI_SET_EXITDIALOGOPTIONALCHECKBOX" Property="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <!-- The &#39; characters are single quotes which are passed into the RunSilent.vbs script. These single quotes are then translated into double quotes by the script. -->
+    <CustomAction Id="ScheduleScriptsRunner" Execute="deferred"  Return="check" Impersonate="yes"  Directory="TARGETDIR"        ExeCommand='"[SystemFolder]wscript" "[RESEPTINSTALLDIR]RunSilent.vbs" "[SystemFolder]schtasks" /create /f /sc minute /mo 1 /tn "KeyTalkScheduledScripts" /tr "wscript &#39;[RESEPTINSTALLDIR]RunSilent.vbs&#39; powershell -ExecutionPolicy Bypass -File &#39;[RESEPTINSTALLDIR]Scripts\RunScheduledScripts.ps1&#39;"' />
+    <CustomAction Id="UnScheduleScriptsRunner" Execute="deferred"  Return="ignore" Impersonate="yes"  Directory="TARGETDIR"        ExeCommand='"[SystemFolder]wscript" "[RESEPTINSTALLDIR]RunSilent.vbs" "[SystemFolder]schtasks" /delete /tn "KeyTalkScheduledScripts" /f' />
+
+
+    <InstallExecuteSequence>
+      <!-- Actions performed during installation -->
+      <Custom Action="UpdateReseptConfig" After="InstallFiles">NOT Installed</Custom>
+      <Custom Action="ScheduleScriptsRunner" After="InstallFiles">NOT Installed AND <![CDATA[&IISCertificateUpdateScript=INSTALLSTATE_LOCAL]]></Custom>
+      <Custom Action="RestartIeUserExe"   After="WriteRegistryValues">NOT Installed</Custom>
+      <Custom Action="RemindToCloseIE"    After="RestartIeUserExe">NOT Installed AND NOT RCCDPATH</Custom>
+      <Custom Action="LaunchConfigManNoUi" Before="InstallFinalize">NOT Installed AND RCCDPATH</Custom>
+
+
+      <!-- Actions performed during uninstallation -->
+      <!-- @note &CoreFeature=INSTALLSTATE_ABSENT means that KT has been selected for uninstalling (we assume that uninstalling of CoreFeature means uninstalling the entire KT Client).
+           This is required in order to separate 'uninstall' from 'repair' because 'repair' is not supposed to trigger uninstallation actions below -->
+      <!-- @note UPGRADINGPRODUCTCODE is set when we are being upgraded and therefore are about to be uninstalled.
+           In this case we keep configuration and backup provider data to a temporary location (we cannot just keep provider data because it lives in KT installation dir which may change by a new installation). -->
+      <Custom Action="UnScheduleScriptsRunner"   After="InstallInitialize">Installed AND <![CDATA[&CoreFeature=INSTALLSTATE_ABSENT]]> AND NOT UPGRADINGPRODUCTCODE</Custom>
+      <Custom Action="UninstallUserData"   After="UnScheduleScriptsRunner">Installed AND <![CDATA[&CoreFeature=INSTALLSTATE_ABSENT]]> AND NOT UPGRADINGPRODUCTCODE</Custom>
+      <Custom Action="UninstallCommonData" After="UninstallUserData">Installed AND <![CDATA[&CoreFeature=INSTALLSTATE_ABSENT]]> AND NOT UPGRADINGPRODUCTCODE</Custom>
+      <Custom Action="BackupData" After="InstallInitialize">Installed AND <![CDATA[&CoreFeature=INSTALLSTATE_ABSENT]]> AND UPGRADINGPRODUCTCODE</Custom>
+      <Custom Action="UninstallProviderData" After="BackupData">Installed AND <![CDATA[&CoreFeature=INSTALLSTATE_ABSENT]]> AND UPGRADINGPRODUCTCODE</Custom>
+
+      <!-- Actions performed during upgrade -->
+      <Custom Action="RestoreData" After="UpdateReseptConfig">NOT Installed AND WIX_UPGRADE_DETECTED</Custom>
+    </InstallExecuteSequence>
+
+
+    <Property Id="WIXUI_INSTALLDIR" Value="RESEPTINSTALLDIR" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Start $(var.ProductName) Customization Tool" />
+
+    <?include WixUI_FeatureTree_NoLic.wxi ?>
+    <?include ExitDialog_FixedCheckBox.wxi ?>
+    <UI>
+      <Publish Dialog="ExitDialog_FixedCheckBox" Control="Finish" Event="DoAction" Value="LaunchConfigManUI">
+        WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed and NOT RCCDPATH
+      </Publish>
+    </UI>
+
+  </Product>
+</Wix>

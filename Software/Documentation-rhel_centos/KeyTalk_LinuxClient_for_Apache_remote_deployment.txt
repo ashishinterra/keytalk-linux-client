@@ -1,0 +1,161 @@
+KeyTalk automated Apache certificate renewal remote deployment instructions
+===========================================================================
+
+Introduction
+------------
+KeyTalk provides automatic Apache certificate renewal functionality. To update
+and reconfigure a server farm with many servers however is tedious work.
+To automate deployments to many servers, the remote deployment tool allows you to:
+* Configure all virtual hosts of your server farm in one place
+* Install KeyTalk Apache certificate updater to each remote machine of your server farm, which includes:
+    - Customizing your KeyTalk client with an RCCD file
+    - Customizing your certificate renewal script configuration (`apache.ini`)
+    - Enabling periodic certificate renewal (by default checking every 10 minutes)
+* Remotely uninstall the KeyTalk client from a server
+
+The following sections explain how to:
+* Prepare web servers
+* Configure Virtual Hosts
+* Deploy Remotely
+* Uninstall Remotely
+
+Prepare web servers
+-------------------------------------------
+First of all, make sure that all the servers you want to deploy to have the
+following software installed:
+
+- RHEL 6/7 x64 or CentOS 6/7 x64
+- Apache 2.2 - 2.4 with SSL module enabled
+
+This deployment script requires password-less SSH access to the machines
+you want to deploy to.
+
+Setting up password-less SSH logins requires the following steps:
+
+1. Generate an SSH key pair (one-time, only if you don't have one yet)
+2. Copy your identity (public key) to all remote servers
+3. Cache your key passphrase using ssh agent (only if you have a passphrase)
+
+
+For example:
+
+    $ ssh-keygen  # only if there is no ssh key pair yet
+
+    $ ssh-copy-id root@10.0.0.1
+    root@10.0.0.1's password: ****
+    Number of key(s) added: 1
+
+    $ ssh-copy-id root@10.0.0.2
+    root@10.0.0.1's password: ****
+    Number of key(s) added: 1
+
+    ...
+
+    $ ssh-add
+    Enter passphrase for /home/me/.ssh/id_rsa: ****
+    Identity added: /home/me/.ssh/id_rsa (/home/me/.ssh/id_rsa)
+
+You can check that you can log in without a password:
+
+    $ ssh root@10.0.0.1
+    (no password should be asked)
+
+
+More information on how to use ssh-copy-id:
+http://www.lindonslog.com/linux-unix/ssh-keygen-keys/
+
+More information on how to manually copy SSH keys:
+http://mah.everybody.org/docs/ssh
+
+Configure Virtual Hosts
+------------------------------
+The configuration format of the deployment script is the same as the
+configuration described in the
+[KeyTalk automated Apache certificate renewal installation instructions](KeyTalk_LinuxClient_for_Apache.txt) with
+addition of the `RemoteHost` property to each virtual host.
+
+The `RemoteHost` should contain `<user>@<host>` (e.g. `root@10.0.0.1`). The
+value should be a user/host combination to which password-less ssh logins are
+enabled.
+
+For instance, the following configuration shows three virtual hosts, distributed
+over two servers (`a.example.com` and `b.example.com` on `root@10.0.0.1` and `c.example.com` on `root@10.0.0.2`):
+
+```json
+[
+  {
+    "RemoteHost" : "root@10.0.0.1",
+    "VHost" : "*:443",
+    "ServerName" : "a.example.com",
+    "KeyTalkProvider" : "MyProvider",
+    "KeyTalkService" : "MY_SERVICE",
+    "KeyTalkUser" : "a.example.com"
+  },
+  {
+    "RemoteHost" : "root@10.0.0.1",
+    "VHost" : "*:443",
+    "ServerName" : "b.example.com",
+    "KeyTalkProvider" : "MyProvider",
+    "KeyTalkService" : "MY_SERVICE",
+    "KeyTalkUser" : "b.example.com"
+  },
+  {
+    "RemoteHost" : "root@10.0.0.2",
+    "VHost" : "*:443",
+    "ServerName" : "c.example.com",
+    "KeyTalkProvider" : "MyProvider",
+    "KeyTalkService" : "MY_SERVICE",
+    "KeyTalkUser" : "c.example.com"
+  }
+]
+```
+
+The above examples show three simple cases without password and e-mail
+notifications. A fully customized example for VHost configuration looks as follows:
+
+```json
+[
+  {
+    "RemoteHost" : "root@10.0.0.1",
+    "VHost" : "*:443",
+    "ServerName" : "d.example.com",
+    "KeyTalkProvider" : "MyProvider",
+    "KeyTalkService" : "MY_SERVICE",
+    "KeyTalkUser" : "c.example.com",
+    "EmailNotifications" : true,
+    "EmailFrom" : "me@example.com",
+    "EmailTo" : "you@example.com",
+    "EmailServer" : "smtp.example.com",
+    "EmailSubject" : "Apache Certificate Renewal"
+  }
+]
+```
+
+Deploy Remotely
+----------------------------
+After preparing your servers for password-less SSH login and configuring your
+VHosts you can use the following command to start deployment:
+
+    $ ./ktclient_remote_deploy install <vhost_configurations.ini>
+          <KeyTalk installer.tgz> <service_configuration.rccd> | tee <logfile>
+
+For example:
+
+    $ ./ktclient_remote_deploy install vhosts.ini
+          KeyTalkClient-5.Y.Z.linux.tgz my_services.rccd | tee log.txt
+
+If deployment on one of the hosts fails, the deployment script will attempt
+to uninstall the failed installation and continue with the next host.
+
+Uninstall Remotely
+----------------------------
+To uninstall an installed KeyTalk linux client remotely you also need to have
+password-less SSH access to the system.
+
+To uninstall remotely, you can use the following command:
+
+    $ ./ktclient_remote_deploy remove <user>@<host>
+
+For example:
+
+    $ ./ktclient_remote_deploy remove root@10.0.0.1

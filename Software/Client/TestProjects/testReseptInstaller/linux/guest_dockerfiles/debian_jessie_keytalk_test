@@ -1,0 +1,12 @@
+# Dockerfile for Debian 8 guest image used in multi-platform tests
+
+FROM debian:jessie
+
+RUN apt-get update
+RUN apt-get -y install openssh-client procps apache2 hdparm unzip lsb-release
+RUN a2enmod ssl
+
+# install mailserver, suppressing any prompts
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install mailutils postfix
+
+ENTRYPOINT service postfix restart && ./bootstrap/test_multiplatform_guest.sh

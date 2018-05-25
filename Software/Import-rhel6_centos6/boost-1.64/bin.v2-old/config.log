@@ -1,0 +1,31 @@
+...patience...
+...found 212 targets...
+...updating 11 targets...
+common.mkdir ../../../bin.v2/libs/thread
+common.mkdir ../../../bin.v2/libs/thread/build
+common.mkdir ../../../bin.v2/libs/thread/build/gcc-4.8.2
+common.mkdir ../../../bin.v2/libs/thread/build/gcc-4.8.2/debug
+common.mkdir ../../../bin.v2/libs/thread/build/gcc-4.8.2/debug/threading-multi
+gcc.compile.c++ ../../../bin.v2/libs/thread/build/gcc-4.8.2/debug/threading-multi/has_atomic_flag_lockfree_test.o
+In file included from ../../../boost/atomic/detail/atomic_template.hpp:25:0,
+                 from ../../../boost/atomic/atomic.hpp:22,
+                 from ../../../libs/thread/src/../build/../../../boost/atomic.hpp:12,
+                 from ../../../libs/thread/src/../build/has_atomic_flag_lockfree_test.cpp:6:
+../../../boost/atomic/detail/bitwise_cast.hpp: In instantiation of ‘To boost::atomics::detail::bitwise_cast(const From&) [with To = long unsigned int; From = void*]’:
+../../../boost/atomic/detail/atomic_template.hpp:556:139:   required from here
+../../../boost/atomic/detail/bitwise_cast.hpp:50:14: warning: missing initializer for member ‘boost::atomics::detail::bitwise_cast(const From&) [with To = long unsigned int; From = void*]::<anonymous struct>::to’ [-Wmissing-field-initializers]
+     value = {};
+              ^
+../../../boost/atomic/detail/bitwise_cast.hpp: In instantiation of ‘To boost::atomics::detail::bitwise_cast(const From&) [with To = void*; From = long unsigned int]’:
+../../../boost/atomic/detail/atomic_template.hpp:574:100:   required from here
+../../../boost/atomic/detail/bitwise_cast.hpp:50:14: warning: missing initializer for member ‘boost::atomics::detail::bitwise_cast(const From&) [with To = void*; From = long unsigned int]::<anonymous struct>::to’ [-Wmissing-field-initializers]
+common.mkdir ../../../bin.v2/libs/system/build/gcc-4.8.2/debug
+common.mkdir ../../../bin.v2/libs/system/build/gcc-4.8.2/debug/threading-multi
+gcc.compile.c++ ../../../bin.v2/libs/system/build/gcc-4.8.2/debug/threading-multi/error_code.o
+gcc.link.dll ../../../bin.v2/libs/system/build/gcc-4.8.2/debug/threading-multi/libboost_system.so.1.64.0
+gcc.link ../../../bin.v2/libs/thread/build/gcc-4.8.2/debug/threading-multi/has_atomic_flag_lockfree
+...updated 11 targets...
+...found 1 target...
+...updating 1 target...
+config-cache.write ../../../bin.v2/project-cache.jam
+...updated 1 target...

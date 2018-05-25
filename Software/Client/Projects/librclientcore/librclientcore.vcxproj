@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{043D004C-90EB-46D8-83C8-B277D10BF9B1}</ProjectGuid>
+    <RootNamespace>librclientcore</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\WinClientCommon.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\Export\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\;..\libtaclientcommon;..\..\..\Common\Projects\libreseptcommon;..\..\..\SysInfra\Projects\libtacommon;..\..\..\SysInfra\Projects\libtalogger;..\..\..\Import\$(BOOST_INCLUDE_DIR);..\..\..\Import\$(OPENSSL_INCLUDE_DIR);..\..\..\Import\$(CURL_INCLUDE_DIR);..\..\..\Import\$(LIBCONFIG_INCLUDE_DIR);..\..\..\Import\$(YAMLCPP_INCLUDE_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;WINVER=_WIN32_WINNT_WS08;_WIN32_WINNT=_WIN32_WINNT_WS08;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;CURL_STATICLIB;LIBCONFIG_STATIC;LIBCONFIGXX_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/wd4512 /wd4127 %(AdditionalOptions)</AdditionalOptions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <PostBuildEvent>
+      <Message>Copying KeyTalkUtils PowerShell script</Message>
+      <Command>md "$(OutDir)DemoProvider" &gt;NUL 2&gt;&amp;1
+copy KeyTalkUtils.psm1 $(OutDir)
+  </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="rclient\Common.cpp" />
+    <ClCompile Include="rclient\NativeCertStore.cpp" />
+    <ClCompile Include="rclient\RcdpHandler.cpp" />
+    <ClCompile Include="rclient\RcdpRequest.cpp" />
+    <ClCompile Include="rclient\RcdpResponse.cpp" />
+    <ClCompile Include="rclient\Settings.cpp" />
+    <ClCompile Include="rclient\TaskSettings.cpp" />
+    <ClCompile Include="rclient\TaskUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="rclient\SettingsDefs.h.templ" />
+    <None Include="VersionGen.pl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="rclient\Common.h" />
+    <ClInclude Include="rclient\NativeCertStore.h" />
+    <ClInclude Include="rclient\RcdpHandler.h" />
+    <ClInclude Include="rclient\RcdpRequest.h" />
+    <ClInclude Include="rclient\RcdpResponse.h" />
+    <ClInclude Include="rclient\Settings.h" />
+    <ClInclude Include="rclient\SettingsImpl.hpp" />
+    <ClInclude Include="rclient\SettingsDefs.h" />
+    <ClInclude Include="rclient\TaskSettings.h" />
+    <ClInclude Include="rclient\TaskUtils.h" />
+    <ClInclude Include="rclient\Version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Projects\libreseptcommon\libreseptcommon.vcxproj">
+      <Project>{5fa53489-1939-43b3-9e47-5b8d02f2397a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\GenerateFiles\GenerateFiles.vcxproj">
+      <Project>{16ef6888-2a6a-447e-9dff-00f112a53fff}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\tasysutils\tasysutils.vcxproj">
+      <Project>{916f7b81-5965-43a8-9dfa-76dee61b36ad}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,46 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+#
+# KeyTalk Client settings constants
+#
+CONFIG_VERSION   =                        "ConfigVersion"
+LATEST_PROVIDER     =                     "LatestProvider"
+LATEST_SERVICE     =                      "LatestService"
+LOG_LEVEL          =                      "LogLevel"
+RESEPT_INSTALL_DIR =                      "Install"
+RESEPT_BROKER_SERVICE_PORT =              "ReseptBrokerServicePort"
+RESEPT_INSTALLED_PROVIDERS =              "InstalledProviders"
+RESEPT_INSTALLED_USER_CAS   =             "InstalledUserCAs"
+RESEPT_INSTALLED_SERVER_CAS   =           "InstalledServerCAs"
+RESEPT_INSTALLED_PRIMARY_CAS   =          "InstalledPrimaryCAs"
+RESEPT_INSTALLED_ROOT_CAS   =             "InstalledRootCAs"
+RESEPT_INSTALLED_EXTRA_SIGNING_INT_CAS =  "InstalledExtraSigningIntCAs"
+RESEPT_INSTALLED_EXTRA_SIGNING_ROOT_CAS = "InstalledExtraSigningRootCAs"
+RESEPT_CUSTOMIZED_USERS     =             "CustomizedUsers"
+
+PROVIDER_LIST           =        "Providers"
+PROVIDER_CONTENT_VERSION =       "ContentVersion"
+PROVIDER_NAME =                  "Name"
+PROVIDER_RESEPT_SVR_ADDRESS =    "Server"
+DEF_PROVIDER_RESEPT_SVR_ADDRESS = "DefaultServer"
+PROVIDER_LOG_LEVEL =             "LogLevel"
+PROVIDER_CA_LIST =               "CAs"
+PROVIDER_USER_CA   =             "UserCA"
+PROVIDER_SERVER_CA   =           "ServerCA"
+PROVIDER_PRIMARY_CA   =          "PrimaryCA"
+PROVIDER_ROOT_CA   =             "RootCA"
+DEF_PROVIDER_CA_LIST =           "DefaultCAs"
+PROVIDER_LAST_USER_MSG_UTC =     "LastUserMsgUtc"
+
+SERVICE_LIST           =         "Services"
+SERVICE_NAME =                   "Name"
+SERVICE_DISPLAY_NAME =           "DisplayName"
+SERVICE_CLEANUP_USER_CERT =      "CleanupUserCert"
+SERVICE_URI     =                "Uri"
+DEF_SERVICE_URI     =            "DefaultUri"
+SERVICE_CERT_VALID_PERCENT   =   "CertValidPercent"
+SERVICE_CERT_FORMAT        =     "CertFormat"
+SERVICE_CERT_CHAIN         =     "CertChain"
+SERVICE_USER_LIST     =          "Users"
+SERVICE_IMPORTED_USER_CERTS =    "ImportedUserCerts"

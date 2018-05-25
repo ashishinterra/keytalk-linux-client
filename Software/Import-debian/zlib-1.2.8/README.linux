@@ -1,0 +1,27 @@
+Notes on building of zlib-1.2.8 with minizip functionality under Linux
+-------------------------
+
+wget https://downloads.sourceforge.net/project/libpng/zlib/1.2.8/zlib-1.2.8.tar.gz
+tar -xzf zlib-1.2.8.tar.gz
+cd zlib-1.2.8
+./configure
+make static
+
+minizip functionality is not included into the resulted library, so we have to do this ourselves
+
+cd contrib/minizip
+make
+
+Go back and add minizip necessary functions to libz.a
+
+cd -
+ar rs libz.a contrib/minizip/zip.o contrib/minizip/unzip.o contrib/minizip/ioapi.o
+mv libz.a libzwapi.a
+
+OSSPEC=$(uname -s | tr "[:upper:]" "[:lower:]")-$(uname -r | cut -d '-' -f 1)-$(uname -m | cut -d '-' -f 1)
+rm -rf /keytalk/Software/Import/zlib-1.2.8/zlib/
+mkdir -p /keytalk/Software/Import/zlib-1.2.8/zlib/
+cp zlib.h ./zconf.h ./contrib/minizip/ioapi.h ./contrib/minizip/iowin32.h contrib/minizip/zip.h ./contrib/minizip/unzip.h /keytalk/Software/Import/zlib-1.2.8/zlib
+rm -rf /keytalk/Software/Import/zlib-1.2.8/lib/${OSSPEC}/
+mkdir -p /keytalk/Software/Import/zlib-1.2.8/lib/${OSSPEC}
+cp libzwapi.a /keytalk/Software/Import/zlib-1.2.8/lib/${OSSPEC}/

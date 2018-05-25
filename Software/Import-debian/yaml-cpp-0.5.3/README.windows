@@ -1,0 +1,38 @@
+Building and installing yaml-cpp static library on MSVS 2013 for KeyTalk Windows client on Windows 7
+===============================================================================================================
+
+1. Install cmake
+
+2. Download and unzip yaml-cpp from https://github.com/jbeder/yaml-cpp/archive/release-0.5.3.zip
+
+3. Open MSVS command prompt (from Tools > Visual Studio Command Prompt or call C:\Program Files\Microsoft Visual Studio 12.0\Common7\Tools\vsvars32.bat in your command prompt)
+
+4. cd to yaml-cpp sources directory
+
+5. Add
+
+SET(BOOST_ROOT "d:/keytalk/Software/Import/boost-1.60")
+SET(BOOST_INCLUDEDIR "d:/keytalk/Software/Import/boost-1.60/boost")
+
+somewhere at the beginning of CMakeLists.txt
+
+6. Build static library
+
+mkdir build
+cd build
+cmake ..\
+
+Open YAML_CPP.sln in MSVS 2013 and build for RelWidhDebInfo or for Release configuration
+
+7. Deploy
+
+Copy the resulted static library from RelWithDebInfo\libyaml-cppmd.lib 
+and optionally yaml-cpp.dir\RelWithDebInfo\vc12.pdb
+to D:\keytalk\Software\Import\yaml-cpp-0.5.3\lib\win32\shared_crt\
+
+Copy include files if necessary as well
+
+Update:
+- YAMLCPP_* in WinClientCommon.props
+
+Rebuild and retest KeyTalk Windows client

@@ -1,0 +1,1 @@
+..\..\..\Import\python-2.7\python ..\..\..\Import\cxxtest\bin\cxxtestgen --have-eh --have-std --part -o taclientcommontests.cpp BrowserTest.h FileVersionInfoTest.h ExceptionDumperTest.h InternetExplorerTest.h ZipTest.h

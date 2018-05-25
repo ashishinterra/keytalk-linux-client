@@ -1,0 +1,112 @@
+#!/usr/bin/expect
+
+###############################################################################
+# The script tests authentication with KeyTalk console client in interactive mode
+#
+# exit codes:
+#          0 : OK
+#          1 : Error during tests
+#          2 : Error in pre-requisites
+#          3 : Not enough parameters provided
+###############################################################################
+
+set timeout 5
+
+if {[llength $argv] < 3 } {
+  send_user "Usage: testKtclient \$HOME service user\n"
+  exit 3
+}
+
+set home    [lindex $argv 0]
+set service [lindex $argv 1]
+set user    [lindex $argv 2]
+
+
+proc calc_response { aUser aChallenge } {
+    spawn  ./calc_response.sh ${aUser}${aChallenge}
+
+    expect timeout
+
+    set response [string range $expect_out(buffer) 0 7]
+    set response [string toupper $response]
+    send_user " Response = $expect_out(buffer) \n"
+
+    return  $response
+    }
+
+proc test_pre_req {aHome aService aUser} {
+    spawn grep $aService $aHome/.keytalk/user.ini
+
+     expect {
+            timeout   { return 2 }
+            "Name =" {   }
+    }
+
+# the following test is not complete correct since the username can used be for other services
+# but if the check fails, it fails correct
+
+    spawn -noecho grep $aUser $aHome/.keytalk/user.ini
+
+     expect {
+            timeout   { return 2 }
+            "Users =" { return 0 }
+    }
+}
+
+proc test_cr_correct {aService aUser} {
+    spawn ../Export/ktclient --service $aService --user $aUser --interactive
+
+    expect "Challenge: *"
+
+    set challenge_str [string range $expect_out(buffer) 11 18]
+    # string contains the challenge
+    set response [ calc_response $aUser $challenge_str ]
+
+    send "$response\r"
+
+    # expect ktclient to exit with 0 which means authentication success
+    lassign [wait] pid spawnid os_error_flag exit_code
+    if { $exit_code == 0 } {
+        return 0
+    }
+
+    return 1
+}
+
+proc test_cr_incorrect_response {aService aUser} {
+    spawn ../Export/ktclient --service $aService --user $aUser --interactive
+
+    expect "Challenge: a43bf18c"
+    send "INVALID_RESPONSE\r"
+
+    # expect ktclient to exit with 2 which means authentication delay
+    lassign [wait] pid spawnid os_error_flag exit_code
+    if { $exit_code == 2 } {
+        return 0
+    }
+
+    return 1
+}
+
+###############################################################################
+#
+# Start main script
+#
+###############################################################################
+
+set error [test_pre_req $home $service $user]
+
+if { $error == 0 } {
+    set error [test_cr_correct $service $user]
+
+    if { $error == 0 } {
+        set error [test_cr_incorrect_response $service $user]
+    }
+}
+
+
+
+exit $error
+
+
+

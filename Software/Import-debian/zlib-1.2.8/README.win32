@@ -1,0 +1,69 @@
+Notes on building of zlib-1.2.8 with minizip functionality under Windows
+
+NOTICE: we experienced crashes in unzReadCurrentFile() under Windows after updating to zlib-1.2.11
+Test case to reproduce the crash: trying to load RCCD from Client\TestProjects\Common\RCCDs\v2\settings.DemoProvider.user.rccd
+@TODO: please fix the crash above before updating the library!
+
+Acquiring zlib
+==============
+
+1\ Download latest version from:
+	http://www.zlib.net/
+
+Take:
+ * zlib source code, version 1.2.8, zipfile format (678K, MD5 checksum 126f8676442ffbd97884eb4d6f32afb4):
+http://prdownloads.sourceforge.net/libpng/zlib128.zip?download
+
+2\ Extract zlib128.zip
+
+
+Building zlib
+=============
+
+0\ Read:
+	- zlib-1.2.8\contrib\vstudio\readme.txt
+	- http://www.tannerhelland.com/5076/compile-zlib-winapi-wapi-stdcall/
+
+1\ Enable Binary hardening options voor asm files:
+	- Go to: zlib-1.2.8\contrib\masmx86
+	- Edit bld_ml32.bat to contain the /safeseh option.
+	  This file will then look like:
+		ml /safeseh /coff /Zi /c /Flmatch686.lst match686.asm
+		ml /safeseh /coff /Zi /c /Flinffas32.lst inffas32.asm
+
+2\ Open a Visual Studio command prompt:
+	- Go to: zlib-1.2.8\contrib\masmx86
+	- Execute bld_ml32.bat
+
+3\ Create Visual Studio project file
+    - Create zlib-1.2.8\contrib\vstudio\vc12 and copy the contents of zlib-1.2.8\contrib\vstudio\vc11 folder to it
+	- Open zlib-1.2.8\contrib\vstudio\vc12\zlibvc.sln in Visual Studio 2013
+		- confirm to convert project to a new Visual Studio format
+	- Set the following linker flags on zlibvc project ("release" configuration):
+		- "Randomized base address" (/DYNAMICBASE)
+		- "Data execution prevention (DEP)" (/NXCOMPAT)
+		- "Image has safe exception handlers" (/SAFESEH)
+    - Comment out VERSION in zlibvc.def
+	- Add _WIN32_WINNT=_WIN32_WINNT_WS08 and WINVER=_WIN32_WINNT_WS08 preprocessor definitions to target Windows 2008 as a minimal system
+	- In minizip\iowin32.c surround
+#if defined(WINAPI_FAMILY_PARTITION) && (!(defined(IOWIN32_USING_WINRT_API)))
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
+#define IOWIN32_USING_WINRT_API 1
+#endif
+#endif
+
+	 with
+
+	#if _WIN32_WINNT >= _WIN32_WINNT_WIN8
+	...
+	#endif
+	- Rebuild zlibvc project for release configuration
+	- Copy the resulted libraries x86\ZlibDllRelease\zlibwapi.dll and x86\ZlibDllRelease\zlibwapi.lib to KeyTalk Import directory
+
+
+
+
+
+
+
+

@@ -1,0 +1,32 @@
+Building and installing yaml-cpp static library on Linux Debian 8 for KeyTalk Linux client
+===============================================================================================================
+
+Notice that we don't use libyaml-cpp provided by Linux packages because of the version incompatibilities across some Linux flavors (in particular between Debian 8 and Ubuntu 16.04)
+
+    apt-get install -y cmake
+    wget https://github.com/jbeder/yaml-cpp/archive/release-0.5.3.tar.gz
+    tar -xzf release-0.5.3.tar.gz
+    cd yaml-cpp-release-0.5.3/
+
+Add somewhere at the beginning of CMakeLists.txt
+
+set(BOOST_ROOT "/keytalk/Software/Import/boost-1.64")
+set(BOOST_INCLUDEDIR "/keytalk/Software/Import/boost-1.64/boost")
+
+Build
+
+    cmake ./
+    make
+
+Install:
+
+    OSSPEC=$(uname -s | tr "[:upper:]" "[:lower:]")-$(uname -r | cut -d '-' -f 1)-$(uname -m | cut -d '-' -f 1)
+    rm -rf /keytalk/Software/Import/yaml-cpp-0.5.3/include /keytalk/Software/Import/yaml-cpp-0.5.3/lib/${OSSPEC}
+    cp -R include/ /keytalk/Software/Import/yaml-cpp-0.5.3
+    mkdir -p /keytalk/Software/Import/yaml-cpp-0.5.3/lib/${OSSPEC}
+    cp libyaml-cpp.a /keytalk/Software/Import/yaml-cpp-0.5.3/lib/${OSSPEC}/
+
+Update:
+- YAMLCPP_LIB_VERSION_DIR in mk/keytalk.linux.mk
+
+Rebuild and retest KeyTalk Linux client

@@ -1,0 +1,57 @@
+//----------------------------------------------------------------------------
+//
+//  Description : Definitions of RESEPT client settings constants.
+//
+//----------------------------------------------------------------------------
+#pragma once
+
+
+namespace rclient
+{
+    namespace Settings
+    {
+        static const char ConfigVersion[]   =                    ${CONFIG_VERSION};
+        static const char LatestProvider[]     =                 ${LATEST_PROVIDER};
+        static const char LatestService[]     =                  ${LATEST_SERVICE};
+        static const char LogLevel[] =                           ${LOG_LEVEL};
+        static const char ReseptInstallDir[] =                   ${RESEPT_INSTALL_DIR};
+        static const char ReseptBrokerServicePort[] =            ${RESEPT_BROKER_SERVICE_PORT};
+        static const char ReseptInstalledProviders[] =           ${RESEPT_INSTALLED_PROVIDERS};
+        static const char ReseptInstalledUserCAs[]   =           ${RESEPT_INSTALLED_USER_CAS};
+        static const char ReseptInstalledServerCAs[]   =         ${RESEPT_INSTALLED_SERVER_CAS};
+        static const char ReseptInstalledPrimaryCAs[]   =        ${RESEPT_INSTALLED_PRIMARY_CAS};
+        static const char ReseptInstalledRootCAs[]   =           ${RESEPT_INSTALLED_ROOT_CAS};
+        static const char ReseptInstalledExtraSigningIntCAs[] =  ${RESEPT_INSTALLED_EXTRA_SIGNING_INT_CAS};
+        static const char ReseptInstalledExtraSigningRootCAs[] = ${RESEPT_INSTALLED_EXTRA_SIGNING_ROOT_CAS};
+        static const char ReseptCustomizedUsers[]              = ${RESEPT_CUSTOMIZED_USERS};
+
+        static const char ProviderList[]           =             ${PROVIDER_LIST};
+        static const char ProviderContentVersion[] =             ${PROVIDER_CONTENT_VERSION};
+        static const char ProviderName[] =                       ${PROVIDER_NAME};
+        static const char ProviderReseptSvrAddress[] =           ${PROVIDER_RESEPT_SVR_ADDRESS};
+        static const char DefProviderReseptSvrAddress[] =        ${DEF_PROVIDER_RESEPT_SVR_ADDRESS};
+        static const char ProviderLogLevel[] =                   ${PROVIDER_LOG_LEVEL};
+        static const char ProviderCaList[] =                     ${PROVIDER_CA_LIST};
+        static const char ProviderUserCa[] =                     ${PROVIDER_USER_CA};
+        static const char ProviderServerCa[] =                   ${PROVIDER_SERVER_CA};
+        static const char ProviderPrimaryCa[] =                  ${PROVIDER_PRIMARY_CA};
+        static const char ProviderRootCa[] =                     ${PROVIDER_ROOT_CA};
+        static const char DefProviderCaList[] =                  ${DEF_PROVIDER_CA_LIST};
+        static const char ProviderLastUserMsgUtc[] =             ${PROVIDER_LAST_USER_MSG_UTC};
+
+        static const char ServiceList[]           =         ${SERVICE_LIST};
+        static const char ServiceName[] =                   ${SERVICE_NAME};
+        static const char ServiceDisplayName[] =            ${SERVICE_DISPLAY_NAME};
+        static const char ServiceCleanupUserCert[] =        ${SERVICE_CLEANUP_USER_CERT};
+        static const char ServiceUri[]     =                ${SERVICE_URI};
+        static const char DefServiceUri[]     =             ${DEF_SERVICE_URI};
+        static const char ServiceCertValidPercent[]   =     ${SERVICE_CERT_VALID_PERCENT};
+        static const char ServiceCertFormat[]        =      ${SERVICE_CERT_FORMAT};
+        static const char ServiceCertChain[]         =      ${SERVICE_CERT_CHAIN};
+        static const char ServiceImportedUserCerts[] =      ${SERVICE_IMPORTED_USER_CERTS};
+        static const char ServiceUserList[]     =           ${SERVICE_USER_LIST};
+
+    }// namespace Settings
+} // namespace rclient
+
+

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{86BBF902-A50E-4C3D-964B-4D8E7CA7CF09}</ProjectGuid>
+    <RootNamespace>testlibrclientappcommon</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\WinClientCommon.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\Export\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>Generatign test...</Message>
+      <Command>call TestGen.bat</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\ReseptClientAppTestConfig;..\..\Projects\librclientappcommon;..\..\Projects\librclientcore;..\..\Projects\libtaclientcommon;..\..\..\Common\Projects\libreseptcommon;..\..\..\SysInfra\Projects\libtacommon;..\..\..\SysInfra\Projects\libtalogger;..\..\..\Import\cxxtest;..\..\..\Import\$(BOOST_INCLUDE_DIR);..\..\..\Import\$(OPENSSL_INCLUDE_DIR);..\..\..\Import\$(LIBCONFIG_INCLUDE_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CONSOLE;WIN32;NDEBUG;_LIB;WINVER=_WIN32_WINNT_WS08;_WIN32_WINNT=_WIN32_WINNT_WS08;_CRT_SECURE_NO_DEPRECATE;_USE_32BIT_TIME_T;LIBCONFIG_STATIC;LIBCONFIGXX_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>librclientappcommon.lib;librclientcore.lib;libreseptcommon.lib;libtaclientcommon.lib;libtacommon.lib;libtalogger.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;libconfig++.lib;libyaml-cppmd.lib;setupapi.lib;Iphlpapi.lib;Dbghelp.lib;User32.lib;shell32.lib;Psapi.lib;Rpcrt4.lib;Advapi32.lib;Gdi32.lib;ws2_32.lib;libeay32.lib;ssleay32.lib;crypt32.lib;winhttp.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Projects\Export;..\..\..\Common\Projects\Export;..\..\..\SysInfra\Projects\Export;..\..\..\Import\$(BOOST_SYSTEM_LIB_DIR);..\..\..\Import\$(BOOST_FILESYSTEM_LIB_DIR);..\..\..\Import\$(BOOST_THREAD_LIB_DIR);..\..\..\Import\$(BOOST_REGEX_LIB_DIR);..\..\..\Import\$(BOOST_SERIALIZE_LIB_DIR);..\..\..\Import\$(BOOST_DATETIME_LIB_DIR);..\..\..\Import\$(BOOST_CHRONO_LIB_DIR);..\..\..\Import\$(LIBCONFIG_LIB_DIR);..\..\..\Import\$(YAMLCPP_LIB_DIR);..\..\..\Import\$(OPENSSL_LIB_DIR);..\..\..\Import\$(CURL_LIB_DIR);$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(SolutionDir)app.windows.compatibility.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+    <PostBuildEvent>
+      <Message>Copying files...</Message>
+      <Command>copy "..\..\..\SysInfra\Projects\Export\libtalogger.dll" "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy log.conf  "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy ..\ReseptClientAppTestConfig\ReseptClientAppTest.conf "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\ReseptClientAppTestConfig\ReseptClientAppTestConfig.cpp" />
+    <ClCompile Include="testlibrclientappcommon.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BbpTest.h" />
+    <ClInclude Include="CommonUtilsTest.h" />
+    <ClInclude Include="ContentConfigInstallationTest.h" />
+    <ClInclude Include="GlobFixture.h" />
+    <ClInclude Include="QtExclusiveAppTest.h" />
+    <ClInclude Include="ReseptClientApiTest.h" />
+    <ClInclude Include="..\ReseptClientAppTestConfig\ReseptClientAppTestConfig.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="log.conf" />
+    <None Include="TestGen.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\SysInfra\Projects\libtalogger\libtalogger.vcxproj">
+      <Project>{65cfc310-1979-4d39-9fc3-01c24556b33e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Projects\GenerateFiles\GenerateFiles.vcxproj">
+      <Project>{16ef6888-2a6a-447e-9dff-00f112a53fff}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Projects\librclientappcommon\librclientappcommon.vcxproj">
+      <Project>{0b3fef32-296e-47c8-a9fd-aea0cb675b45}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\DependentLibDeployer\DependentLibDeployer.vcxproj">
+      <Project>{815038d0-0519-4a67-a340-715b01119f18}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

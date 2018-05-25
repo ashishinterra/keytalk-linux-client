@@ -1,0 +1,52 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{1A8DF225-9750-4637-A78D-26FE8DACD0AE} = s '%PRODUCT_NAME%IeClient'
+		'ReseptLoader.DLL'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+}
+
+HKLM
+{
+	NoRemove SOFTWARE
+	{
+		NoRemove Microsoft
+		{	
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove Explorer
+					{
+						NoRemove 'Browser Helper Objects'
+						{
+							ForceRemove {B40D0B13-9A70-4394-8F21-E2E4AE3A9BC4} = s '%PRODUCT_NAME% IE BHO'
+                            {
+                                val 'NoExplorer' = d '1'
+                            }
+						}
+					}
+				}
+			}
+			NoRemove 'Internet Explorer'
+			{
+				NoRemove 'Low Rights'
+				{
+					NoRemove ElevationPolicy
+					{
+						ForceRemove {3F940677-A702-47b2-88EE-9FDB95019B96} = s ''
+						{
+							val 'AppName' = s '%BROKER_NAME%'
+							val 'AppPath' = s '%RESEPT_INSTALL_DIR%'
+							val 'Policy'  = d '3'
+						}				
+					}
+				}
+			}
+		}
+	}
+}

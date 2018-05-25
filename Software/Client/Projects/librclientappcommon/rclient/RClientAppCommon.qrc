@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/RClientAppCommon" >
+        <file>logo.png</file>
+        <file>info_ico.png</file>
+    </qresource>
+</RCC>

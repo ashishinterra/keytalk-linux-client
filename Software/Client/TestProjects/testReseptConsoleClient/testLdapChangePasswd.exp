@@ -1,0 +1,102 @@
+#!/usr/bin/expect
+
+###############################################################################
+# The script tests LDAP change password functions of KeyTalk console client in interactive mode
+# error values:
+#          0 : OK
+#          1 : Error during tests
+#          2 : Error in pre-requisites
+#          3 : Not enough parameters provided
+###############################################################################
+
+set timeout 5
+
+if {[llength $argv] < 3 } {
+  send_user "Usage: testKtclient \$HOME service user\n"
+  exit 3
+}
+
+set home    [lindex $argv 0]
+set service [lindex $argv 1]
+set user    [lindex $argv 2]
+
+
+
+proc test_pre_req {aHome aService aUser} {
+    spawn grep $aService $aHome/.keytalk/user.ini
+
+     expect {
+            timeout   { return 2 }
+            "Name =" {   }
+    }
+
+# the following test is not complete correct since the username can used be for other services
+# but if the check fails, it fails correct
+
+    spawn -noecho grep $aUser $aHome/.keytalk/user.ini
+
+     expect {
+            timeout   { return 2 }
+            "Users =" { return 0 }
+    }
+}
+
+proc test_change_password {aService aUser aOldPassword aNewPassword} {
+
+    spawn ../Export/ktclient --service $aService --user $aUser --interactive
+
+    expect {
+            timeout   { return 2 }
+            "Enter password:" { send "$aOldPassword\r" }
+    }
+
+    expect {
+            timeout   { return 2 }
+            "Do you want to change it?*" { send "Y\r" }
+    }
+
+    expect {
+            timeout   { return 2 }
+            "Enter new password:" { send "$aNewPassword\r" }
+    }
+
+    expect {
+            timeout   { return 2 }
+            "Restarting after password change" { }
+    }
+
+    expect {
+            timeout   { return 2 }
+            "Enter password:" { send "$aNewPassword\r" }
+    }
+
+     expect {
+            timeout   { return 2 }
+            "Do you want to change it?*" { send "N\r" }
+    }
+
+    return 0
+
+}
+
+###############################################################################
+#
+# Start main script
+#
+###############################################################################
+
+set error [test_pre_req $home $service $user]
+
+if { $error == 0 } {
+    set error [test_change_password $service $user "Sioux2010" "Sioux2011"]
+
+    if { $error == 0 } {
+    # reset to the original password
+    set error [test_change_password $service $user "Sioux2011" "Sioux2010"]
+ }
+}
+
+exit $error
+
+
+

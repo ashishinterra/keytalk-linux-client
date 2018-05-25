@@ -1,0 +1,16 @@
+Artistic Style Automatic Code Formatter
+==============================================
+
+To build on Linux:
+-------------
+svn checkout  "https://svn.code.sf.net/p/astyle/code/trunk/AStyle"
+cd AStyle/build/gcc/
+make
+
+To build on Windows:
+----------
+you may just download a pre-built Windows executable from https://sourceforge.net/projects/astyle/files/
+
+For more info
+------------------
+http://astyle.sourceforge.net/

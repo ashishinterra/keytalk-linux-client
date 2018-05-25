@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/p/astyle/code/!svn/ver/654/trunk/AStyle/src
+END
+ASBeautifier.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/astyle/code/!svn/ver/639/trunk/AStyle/src/ASBeautifier.cpp
+END
+astyle_main.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/astyle/code/!svn/ver/654/trunk/AStyle/src/astyle_main.cpp
+END
+astyle.h
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/astyle/code/!svn/ver/654/trunk/AStyle/src/astyle.h
+END
+ASFormatter.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/astyle/code/!svn/ver/654/trunk/AStyle/src/ASFormatter.cpp
+END
+ASEnhancer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/astyle/code/!svn/ver/639/trunk/AStyle/src/ASEnhancer.cpp
+END
+ASLocalizer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/astyle/code/!svn/ver/654/trunk/AStyle/src/ASLocalizer.cpp
+END
+astyle_main.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/astyle/code/!svn/ver/654/trunk/AStyle/src/astyle_main.h
+END
+ASResource.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/astyle/code/!svn/ver/639/trunk/AStyle/src/ASResource.cpp
+END
+ASLocalizer.h
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/astyle/code/!svn/ver/639/trunk/AStyle/src/ASLocalizer.h
+END

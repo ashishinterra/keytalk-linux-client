@@ -1,0 +1,137 @@
+#!/usr/bin/expect
+
+###############################################################################
+# error values:
+#          0 : OK
+#          1 : Error during tests
+#          2 : Error in pre-requisites
+#          3 : Not enough parameters provided
+###############################################################################
+
+set timeout 10
+
+if {[llength $argv] < 3 } {
+  send_user "Usage: testKtclient \$HOME service user\n"
+  exit 3
+}
+
+set home    [lindex $argv 0]
+set service [lindex $argv 1]
+set user    [lindex $argv 2]
+
+
+###############################################################################
+#
+# Section with called procedures
+#
+###############################################################################
+proc test_pre_req {aHome aService aUser} {
+    spawn grep $aService $aHome/.keytalk/user.ini
+
+     expect {
+            timeout   { return 2 }
+            "Name =" {   }
+            }
+
+# the following test is not complete correct since the username can used be for other services
+# but if the check fails, it fails correct
+
+    spawn -noecho grep $aUser $aHome/.keytalk/user.ini
+
+     expect {
+            timeout   { return 2 }
+            "Users =" { return 0 }
+    }
+}
+
+proc calc_response { aUser aChallenge } {
+    spawn  ./calc_response.sh ${aUser}${aChallenge}
+
+    expect timeout
+
+    set response [string range $expect_out(buffer) 0 7]
+    set response [string toupper $response]
+    send_user " Response = $expect_out(buffer) \n"
+
+    return  $response
+    }
+
+
+
+proc test_systempin_correct {aService aUser} {
+
+    spawn ../Export/ktclient --service $aService --user $aUser --interactive
+
+    expect {
+             "Enter password: *" { send "444444\r"}
+           timeout {return 2}
+     }
+
+    expect {
+           "Are you prepared to accept a new system-generated PIN" { send "y\r" }
+           timeout {return 2}
+     }
+
+    expect {
+           "Do you accept this" { send "y\r" }
+           timeout {return 2}
+     }
+
+    expect {
+           "Enter PASSCODE:" { send "555555\r" }
+           timeout {return 2}
+     }
+
+    return 0
+}
+
+
+proc test_cr_correct {aService aUser} {
+
+    spawn ../Export/ktclient --service $aService --user $aUser --interactive
+
+    expect {
+             "Enter password: *" { send "666666\r"}
+           timeout {return 2}
+     }
+
+    expect {
+            "Enter your new PIN" { send "234567\r" }
+           timeout {return 2}
+     }
+
+    expect {
+           "Please re-enter new PIN" { send "234567\r" }
+           timeout {return 2}
+     }
+
+    expect {
+          "Enter PASSCODE:" { send "7777777\r" }
+           timeout {return 2}
+     }
+
+    return 0
+}
+
+###############################################################################
+#
+# Start main script
+#
+###############################################################################
+
+set error [test_pre_req $home $service $user]
+
+if { $error == 0 } {
+
+    if { $user == "SecuridNewUserPinUser" } {
+        set error [test_cr_correct $service $user]
+    }
+    if { $user == "SecuridNewSystemPinUser" } {
+        set error [test_systempin_correct $service $user]
+    }
+}
+
+ exit $error
+
+
+

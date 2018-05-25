@@ -1,0 +1,38 @@
+1. Use KeyTalk Windows client Development VM as a base system for the build server (make sure new VM UUID is created)
+
+2. Install CruiseControl.net
+
+3. Make sure paths in ContinuousIntegration\cc.net\ccnet.config and ContinuousIntegration\cc.net\ccservice.exe.config are correct, create directories for build logs and build state is necessary
+
+4. Copy/merge ContinuousIntegration\cc.net\ccservice.exe.config to the one installed by CruiseControl.NET (typically in C:\Program Files\CruiseControl.NET\server), backing up the original one first.
+
+5. Copy build output stylesheet(s) from ContinuousIntegration\cc.net\xsl\ directory to C:\Program Files\CruiseControl.NET\server\xsl\
+
+6. Upload build server ssh private key id_rsa to %USERPROFILE%/.ssh/ on the build server
+    - This key allows read-only access to KeyTalk git repository
+    - make sure repository URL with key authentication is used: ssh://git@stash.keytalk.com:7999/keytalk/core.git
+
+7. Configure CruiseControl.net service to start automatically under current user account instead of default LocalSystem.
+   -  LocalSystem account would not allow using ssh key and installing client ini files to the user profile
+	- see %tmp%\ccnet.log for troubleshooting
+
+8 Create minimal KeyTalk client installation:
+  - Change path in ContinuousIntegration\cc.net\resept.ini if needed
+  - Import CertKeys\CommunicationAndSigning\pcacert.der to the "Trusted Root" Windows certificate store
+  - Import CertKeys\CommunicationAndSigning\signingcacert.der to the "Intermediate" Windows certificate store.
+
+9. [optionally] Download, install and configure CcTray tool (from http://sourceforge.net/projects/ccnet/files/CruiseControl.NET%20Releases/CruiseControl.NET%201.8.5/ or later version)
+   - make sure to allow firewall to allow monitoring of CC.NET server from the outside
+
+10. Make a test build run, e.g. by kicking it from CcTray.
+  - check log directory (e.g. D:\builds\logs\) and %tmp%\ccnet.log for troubleshooting
+  - update md5 of %windir%\winhlp32.exe on the server (CUST_PASSWD_INTERNAL_FILE service) if necessary
+
+11. Set system time to UTC
+
+12. Share KeyTalk source folder (read-only) as "builds" so developers can access it from their machines
+
+13. Enable Remote Desktop connections to this machine
+
+14. Convert VMX VM to OVF and import it to Vmware ESX server
+

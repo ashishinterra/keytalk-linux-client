@@ -1,0 +1,113 @@
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file
+END
+astyle.ini
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/astyle/code/!svn/ver/617/trunk/AStyle/file/astyle.ini
+END
+allman.ini
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/allman.ini
+END
+mozilla.ini
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/mozilla.ini
+END
+horstmann.ini
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/horstmann.ini
+END
+stroustrup.ini
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/stroustrup.ini
+END
+llvm.ini
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/llvm.ini
+END
+google.ini
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/google.ini
+END
+clang-mozilla.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/clang-mozilla.yaml
+END
+README.md
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/astyle/code/!svn/ver/567/trunk/AStyle/file/README.md
+END
+clang-llvm.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/clang-llvm.yaml
+END
+java.ini
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/java.ini
+END
+clang-google.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/clang-google.yaml
+END
+chromium.ini
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/chromium.ini
+END
+webkit.ini
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/webkit.ini
+END
+clang-chromium.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/clang-chromium.yaml
+END
+gnu.ini
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/gnu.ini
+END
+clang-webkit.yaml
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/clang-webkit.yaml
+END
+linux.ini
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/p/astyle/code/!svn/ver/654/trunk/AStyle/file/linux.ini
+END

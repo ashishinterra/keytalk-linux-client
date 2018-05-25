@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="ReleaseNoSign|Win32">
+      <Configuration>ReleaseNoSign</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E4B78844-1CE6-4760-8D31-45B7E2EC1934}</ProjectGuid>
+    <RootNamespace>ReseptClientInstaller</RootNamespace>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseNoSign|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\..\..\WinClientCommon.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseNoSign|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\..\..\WinClientCommon.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>nmake /NOLOGO</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>nmake rebuild /NOLOGO </NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>nmake clean /NOLOGO</NMakeCleanCommandLine>
+    <NMakeOutput />
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseNoSign|Win32'">
+    <OutDir>$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>nmake NOSIGN=1 /NOLOGO</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>nmake rebuild NOSIGN=1 /NOLOGO </NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>nmake clean NOSIGN=1 /NOLOGO</NMakeCleanCommandLine>
+    <NMakeOutput />
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Image Include="Bitmaps\banner.bmp" />
+    <Image Include="Bitmaps\dialog.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReseptClientInstaller.wxi" />
+    <None Include="ExitDialog_FixedCheckBox.wxi" />
+    <None Include="makefile" />
+    <None Include="MsiSilentInstall.vbs" />
+    <None Include="..\..\resept.ini" />
+    <None Include="ReseptClientInstaller.wxi.templ" />
+    <None Include="ReseptClientInstaller.wxs">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="VersionGen.pl" />
+    <None Include="WixUI_FeatureTree_NoLic.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\SysInfra\Projects\libtalogger\libtalogger.vcxproj">
+      <Project>{65cfc310-1979-4d39-9fc3-01c24556b33e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\DependentLibDeployer\DependentLibDeployer.vcxproj">
+      <Project>{815038d0-0519-4a67-a340-715b01119f17}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\GenerateFiles\GenerateFiles.vcxproj">
+      <Project>{16ef6888-2a6a-447e-9dff-00f112a53fff}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptBrokerService\ReseptBrokerService.vcxproj">
+      <Project>{b8fb3799-5f05-4118-93e8-ad9fb0565d7d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptConfigManager\ReseptConfigManager.vcxproj">
+      <Project>{121b4294-60c7-4986-9cb6-19dd3c5ca7dd}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptConfigTool\ReseptConfigTool.vcxproj">
+      <Project>{c2ee048e-dbc1-4c13-a0b6-d183e2e107fd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptConsoleClient\ReseptConsoleClient.vcxproj">
+      <Project>{8aff0d6d-885a-4d04-b834-7f0dda5f6e8c}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptDesktopClient\ReseptDesktopClient.vcxproj">
+      <Project>{9700af3c-3e24-4d44-916b-eb53c1df28ca}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptIeBroker\ReseptIeBroker.vcxproj">
+      <Project>{aa0197ce-c982-4361-84d9-c62201fe5955}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptIeClient\ReseptIeClient.vcxproj">
+      <Project>{ffdc753e-619d-4baf-b797-96ffd9c24b42}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptPrGenerator\ReseptPrGenerator.vcxproj">
+      <Project>{7634333c-b888-400a-a9eb-a42b247381b0}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ReseptResponseCalculator\ReseptResponseCalculator.vcxproj">
+      <Project>{738fb3b3-3344-4e31-b8f9-c0b1b4d4d29a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\tasysutils\tasysutils.vcxproj">
+      <Project>{916f7b81-5965-43a8-9dfa-76dee61b36ad}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ConfigUpdater\ConfigUpdater.vcxproj">
+      <Project>{2422aed4-6323-4a46-9697-3666e64f3fc3}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\IeUserExeRestarter\IeUserExeRestarter.vcxproj">
+      <Project>{3dc14fd2-07e6-4222-a308-598c96ad0d90}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\MessageBoxManager\MessageBoxManager.vcxproj">
+      <Project>{c07f9b7f-7c77-47d4-af80-e54d8cf03d16}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Sweeper\Sweeper.vcxproj">
+      <Project>{755683d2-2a55-4ce3-939f-219cf21f3c6a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

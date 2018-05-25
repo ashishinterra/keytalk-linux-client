@@ -1,0 +1,31 @@
+Instructions for building and installing libcurl-7.54.1 static library on Linux
+-----------------------------------------------
+
+1. Build
+Do NOT use source from git repository since requires an extra code generation step
+
+wget http://curl.haxx.se/download/curl-7.54.1.tar.gz
+tar -xzf curl-7.54.1.tar.gz
+cd curl-7.54.1
+./configure --with-ssl --enable-ipv6 --disable-shared --disable-ftp --disable-file --disable-ldap --disable-dict --disable-telnet --disable-tftp --disable-rtsp --disable-pop3 --disable-imap --disable-smtp --disable-gopher --disable-ares -disable-debug --without-zlib --without-libidn --without-libssh2 --without-librtmp
+make
+
+2. Install
+
+OSSPEC="linux-$(uname -r | cut -d '-' -f 1)-$(uname -m | cut -d '-' -f 1)"
+rm -rf /keytalk/Software/Import/curl-7.54/include/${OSSPEC}
+mkdir -p /keytalk/Software/Import/curl-7.54/include/${OSSPEC}/curl/
+cp -rf include/curl/*.h /keytalk/Software/Import/curl-7.54/include/${OSSPEC}/curl/
+LIBDIR=/keytalk/Software/Import/curl-7.54/lib/${OSSPEC}/
+rm -rf ${LIBDIR}
+mkdir -p ${LIBDIR}
+cp lib/.libs/libcurl.a /keytalk/Software/Import/curl-7.54/lib/${OSSPEC}/
+
+Update KeyTalk reference to curl:
+
+sed -i -E 's/^(CURL_LIB_VERSION_DIR)\=.+$/\1=curl-7.54/' /keytalk/Software/mk/keytalk.common.mk
+
+Add new files to the source control
+Remove the old version of curl
+
+3. Rebuild and test KeyTalk

@@ -1,0 +1,9 @@
+ConfigVersion = "1.0";
+ReseptBrokerServicePort = 0;
+Install  = "C:\\Program Files\\keytalk";
+InstalledProviders = [];
+InstalledUserCAs = [ "TrustAlert DEMO Signing CA" ];
+InstalledServerCAs = [ "TrustAlert DEMO Communication CA", "TrustAlert DEMO Communication CA1" ];
+InstalledPrimaryCAs = [ "TrustAlert DEMO ROOT CA" ];
+InstalledRootCAs = [ ];
+/* no "CustomizedUsers", "InstalledExtraSigningIntCAs" and "InstalledExtraSigningRootCAs" settings to test that default value is correctly set to support old configs without this setting */

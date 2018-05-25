@@ -1,0 +1,675 @@
+#pragma once
+
+#include "ta/common.h"
+#include "ta/strings.h"
+#include "ta/signutils.h"
+
+#include <cstddef>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include "boost/static_assert.hpp"
+#include "boost/format.hpp"
+#include "boost/bind.hpp"
+#include <stdexcept>
+
+namespace resept
+{
+    const std::string CompanyName        = ${COMPANY_NAME};
+    const std::string ProductName        = ${PRODUCT_NAME};
+
+    const size_t MaxProviderLength     = ${MAX_PROVIDER_LENGTH};
+    const size_t MaxServiceLength      = ${MAX_SERVICE_LENGTH};
+    const size_t MaxUserIdLength       = ${MAX_USER_ID_LENGTH};
+    const size_t MaxClientDescLength   = ${MAX_CLIENT_DESC_LENGTH};
+    const size_t MaxPasswordLength     = ${MAX_PASSWORD_LENGTH};
+    const size_t MaxChallengeLength    = ${MAX_CHALLENGE_LENGTH};
+    const size_t MaxResponseLength     = ${MAX_RESPONSE_LENGTH};
+    const size_t MaxPincodeLength      = ${MAX_PINCODE_LENGTH};
+
+    const std::string SupportEmail     = ${SUPPORT_EMAIL};
+
+    const std::string ZeroHwsig    = ${ZERO_CS};
+
+    // Password validity. Defaults to unknown.
+    struct PasswordValidity
+    {
+        enum Status
+        {
+            _firstStatus,
+            expired = _firstStatus,
+            notExpired,
+            neverExpires,
+            unknown,
+            _lastStatus = unknown
+        } status;
+        int validity; /* if status is expired, validity contains number of seconds the password has been expired (zero or negative)
+                         if status is notExpired, validity contains number of seconds left until expiration (positive)
+                         otherwise validity is undefined */
+
+        PasswordValidity(Status aStatus = unknown, int aValidity = 0) : status(aStatus), validity(aValidity) {}
+
+        static inline Status parseStatus(const int aStatus)
+        {
+            if  (aStatus >= _firstStatus && aStatus <= _lastStatus)
+            {
+                return static_cast<Status>(aStatus);
+            }
+            else
+            {
+                TA_THROW_MSG(std::invalid_argument, boost::format("Cannot parse password validity status from %d") % aStatus);
+            }
+        }
+    };
+
+    struct AuthResult
+    {
+        enum Type
+        {
+            FirstAuthResult,
+            Ok = FirstAuthResult,
+            Delay,
+            Locked,
+            Expired,
+            _NOT_USED_, // kept in enum for backward compatibility of enum values
+            Challenge,
+            LastAuthResult = Challenge
+        } type;
+        size_t delay; // delay in seconds, makes sense for Delay and Expired only
+        PasswordValidity passwordValidity; // makes sense for Ok only
+
+        // c'tor for ok, locked and challenge
+        AuthResult(Type aType = Ok, const PasswordValidity& aPasswordValidity = PasswordValidity()) : type(aType), delay(0), passwordValidity(aPasswordValidity) {}
+        // c'tor for delay and expired
+        AuthResult(Type aType, const size_t aDelay) : type(aType), delay(aDelay) {}
+    };
+    const std::string AuthResultStrings[] = ${AUTH_RESULT_STRINGS};
+    BOOST_STATIC_ASSERT(sizeof(AuthResultStrings)/sizeof(AuthResultStrings[0]) == AuthResult::LastAuthResult-AuthResult::FirstAuthResult+1);
+
+    inline bool isAuthResult(const int aVal)
+    {
+        return (aVal >= AuthResult::FirstAuthResult && aVal <= AuthResult::LastAuthResult);
+    }
+    inline std::string str(const AuthResult::Type anAuthResultType)
+    {
+        return AuthResultStrings[anAuthResultType-AuthResult::FirstAuthResult];
+    }
+    inline bool parseAuthResult(const std::string& anAuthResultTypeStr, AuthResult::Type& anAuthResultType)
+    {
+        for (int i = AuthResult::FirstAuthResult; i <= AuthResult::LastAuthResult; ++i)
+        {
+            AuthResult::Type myAuthResultType = static_cast<AuthResult::Type>(i);
+            if (str(myAuthResultType) == anAuthResultTypeStr)
+            {
+                anAuthResultType = myAuthResultType;
+                return true;
+            }
+        }
+        return false;
+    }
+    inline AuthResult::Type parseAuthResult(const int anAuthResultTypeInt)
+    {
+        if (isAuthResult(anAuthResultTypeInt))
+        {
+            return static_cast<AuthResult::Type>(anAuthResultTypeInt);
+        }
+        else
+        {
+            TA_THROW_MSG(std::invalid_argument, boost::format("Cannot parse authentication result type from %d") % anAuthResultTypeInt);
+        }
+    }
+
+    /**
+      Credentials
+    */
+
+    enum CredentialType
+    {
+        FirstCredentialType,
+        credUserId = FirstCredentialType,
+        credHwSig,
+        credPasswd,
+        credPin,
+        credResponse,
+        LastCredentialType = credResponse
+    };
+    const std::string CredentialTypeStrings[] = ${CREDENTIAL_STRINGS};
+    BOOST_STATIC_ASSERT(FirstCredentialType <= LastCredentialType);
+    BOOST_STATIC_ASSERT(sizeof(CredentialTypeStrings)/sizeof(CredentialTypeStrings[0]) == LastCredentialType-FirstCredentialType+1);
+
+    inline bool isCredentialType(const int aVal)
+    {
+        return (aVal >= FirstCredentialType && aVal <= LastCredentialType);
+    }
+    inline std::string str(const CredentialType aCredentialType)
+    {
+        return CredentialTypeStrings[aCredentialType-FirstCredentialType];
+    }
+    inline bool parseCredentialType(const std::string& aCredentialTypeStr, CredentialType& aCredentialType)
+    {
+        for (int iCred = FirstCredentialType; iCred <= LastCredentialType; ++iCred)
+        {
+            CredentialType myCredType = static_cast<CredentialType>(iCred);
+            if (str(myCredType) == aCredentialTypeStr)
+            {
+                aCredentialType = myCredType;
+                return true;
+            }
+        }
+        return false;
+    }
+    typedef std::vector<CredentialType> CredentialTypes;
+
+    inline std::string fmtCredTypes(const resept::CredentialTypes& aCredTypes)
+    {
+        std::vector<std::string> myCredTypeStrs;
+        resept::CredentialTypes myCredentialTypes(aCredTypes);
+        // Sort to have userid at the beginning for pretty and consistent printing
+        boost::sort(myCredentialTypes);
+        foreach (const resept::CredentialType ct, myCredentialTypes)
+        {
+            myCredTypeStrs.push_back(str(ct));
+        }
+        return ta::Strings::join(myCredTypeStrs, ',');
+    }
+
+    inline std::string normalizeHwsig(const std::string& aHwSig)
+    {
+        return boost::to_upper_copy(aHwSig);
+    }
+
+    struct Credential
+    {
+        Credential() {};
+        Credential(const CredentialType aType, const std::string& aVal): type(aType)
+        {
+            if (aType == credResponse)
+                responseVal["Response"] = aVal;
+            else
+                val = aVal;
+        };
+        Credential(const ta::StringDict& aResponseVal): type(credResponse), responseVal(aResponseVal) {};
+
+        CredentialType type;
+        std::string val;
+        ta::StringDict responseVal; // response name -> response val; response names are used as a key when multiple responses are supplied
+    };
+    inline bool operator==(const Credential& lhs, const Credential& rhs)
+    {
+        if (lhs.type == credHwSig)
+        {
+            return (lhs.type == rhs.type && normalizeHwsig(lhs.val) == normalizeHwsig(rhs.val) && lhs.responseVal == rhs.responseVal);
+        }
+        else
+        {
+            return (lhs.type == rhs.type && lhs.val == rhs.val && lhs.responseVal == rhs.responseVal);
+        }
+    }
+    typedef std::vector<Credential> Credentials;
+
+
+    inline CredentialTypes extractCredentialTypes(const Credentials& aCredentials)
+    {
+        CredentialTypes myRetVal;
+        for (Credentials::const_iterator it = aCredentials.begin(), end = aCredentials.end(); it!= end; ++it)
+            myRetVal.push_back(it->type);
+        return myRetVal;
+    }
+    inline bool findCredential(const Credentials& aCredentials, const CredentialType aCredType, std::string& aCredVal)
+    {
+        Credentials::const_iterator myIt = std::find_if(aCredentials.begin(), aCredentials.end(), boost::bind(&Credential::type, _1) == aCredType);
+        if (myIt == aCredentials.end())
+            return false;
+
+        aCredVal = myIt->val;
+        return true;
+    }
+    inline std::string getCredentialValue(const Credentials& aCredentials, CredentialType aCredType, const std::string& aHint = "")
+    {
+        std::string myCredVal;
+        if (findCredential(aCredentials, aCredType, myCredVal))
+        {
+            return myCredVal;
+        }
+        else
+        {
+            if (aHint.empty()) {
+                TA_THROW_MSG(std::invalid_argument, boost::format("%s missing") % str(aCredType));
+            } else {
+                TA_THROW_MSG(std::invalid_argument, boost::format("%s missing for %s") % str(aCredType) % aHint);
+            }
+        }
+    }
+    inline bool getCredentialResponseValue(const Credentials& aCredentials, ta::StringDict& aVal)
+    {
+        Credentials::const_iterator myIt = std::find_if(aCredentials.begin(), aCredentials.end(), boost::bind(&Credential::type, _1) == credResponse);
+        if (myIt == aCredentials.end())
+            return false;
+
+        aVal = myIt->responseVal;
+        return true;
+    }
+
+    enum CertFormat
+    {
+        _firstCertFormat,
+        certformatP12 = _firstCertFormat,
+        certformatPem,
+        _lastCertFormat = certformatPem
+    };
+    static const char* CertFormatStrings[] = ${CERT_FORMAT_STRINGS};
+    BOOST_STATIC_ASSERT(sizeof(CertFormatStrings)/sizeof(CertFormatStrings[0]) == _lastCertFormat - _firstCertFormat + 1);
+
+    inline std::string str(CertFormat aCertFormat)
+    {
+        return CertFormatStrings[aCertFormat];
+    }
+    inline bool parseCertFormat(const std::string& aCertFormatStr, CertFormat& aCertFormat)
+    {
+        for (int i = _firstCertFormat; i <= _lastCertFormat; ++i)
+        {
+            const CertFormat fmt = static_cast<CertFormat>(i);
+            if (aCertFormatStr == str(fmt))
+            {
+                aCertFormat = fmt;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    namespace rcdp
+    {
+        const int PasswordNeverExpires = ${RCDP_PASSWORD_NEVER_EXPIRES};
+        const unsigned int PackagedCertExportPasswdSize = ${RCDP_PACKAGED_CERT_EXPORT_PASSWDSIZE};
+
+        enum ErrCode
+        {
+            ${RCDP_ERR_CODE}
+        };
+
+        struct RequestSid
+        {
+            RequestSid(): is_set(false) {}
+            RequestSid(const std::string& aVal): is_set(true), val(aVal) {}
+            bool is_set;
+            std::string val;
+        };
+        struct ResponseSid
+        {
+            ResponseSid(): is_set(false) {}
+            ResponseSid(const std::string& aVal): is_set(true), val(aVal) {}
+            bool is_set;
+            std::string val;
+        };
+
+        inline std::string boolToStr(bool aBool)
+        {
+            return aBool ? "true" : "false";
+        }
+        inline bool strToBool(const std::string& aBooltStr, bool& aBool)
+        {
+            if (boost::iequals(aBooltStr, "true"))
+            {
+                aBool = true;
+                return true;
+            }
+            else if (boost::iequals(aBooltStr, "false"))
+            {
+                aBool = false;
+                return true;
+            }
+            return false;
+        }
+    } // rcdp
+
+    namespace rcdpv1
+    {
+        const std::string V_1_4 = ${RCDP_VERSION_1_4};
+        const std::string V_1_5 = ${RCDP_VERSION_1_5};
+
+        const std::string ServerSupportdRcdpVersions[] = ${SERVER_SUPPORTED_RCDPV1_VERSIONS};
+
+        const std::string ReseptSvrPath = ${RCDPV1_RESEPT_SVR_PATH};
+        const std::string HttpSidCookieName = ${RCDPV1_HTTP_SID_COOKIE_NAME};
+        const std::string HttpMsgValPrefix = ${RCDPV1_HTTP_MSG_VAL_PREFIX};
+        const std::string LastMsgRequestAll = ${RCDPV1_LAST_MSG_REQUEST_ALL};
+
+        const size_t AesGcmTagSize    = ${RCDPV1_AES_GCM_TAG_SIZE};
+        const size_t AesGcmIvSize     = ${RCDPV1_AES_GCM_IV_SIZE};
+
+        const std::string PasswordChangeNewPasswdStr = ${RCDPV1_CHANGEPWD_NEWPASSWD};
+
+        enum NotsupCode
+        {
+            ${RCDPV1_NOTSUP_CODE}
+        };
+
+        enum Request
+        {
+            FirstRequest,
+            reqEOC = FirstRequest,
+            reqVSMREQ,
+            reqCT, reqR3RESP, reqECRESP,
+            reqAUTH, reqAUTHRESP,
+            reqLICENSE, reqLASTMSG,
+            reqFORMAT, reqRESOLVED, reqDIGEST,
+            reqFIN, reqERR, reqNOTSUP,
+            reqLDAPCHANGEPWD,
+            LastRequest = reqLDAPCHANGEPWD
+        };
+
+        enum Response
+        {
+            FirstResponse,
+            respEOC = FirstResponse,
+            respVSMACK,
+            respR3USE, respR3OK, respECUSE, respECOK,
+            respAUTHREQ, respAUTHRESULT,
+            respLICENSE, respNEWMSG,
+            respURL, respEXEC, respCERT,
+            respFIN, respERR, respNOTSUP,
+            respLDAPCHANGEPWDRESULT,
+            LastResponse = respLDAPCHANGEPWDRESULT
+        };
+
+        enum AuthRequestOpt
+        {
+            FirstAuthRequestOpt,
+            authrequestoptRenew = FirstAuthRequestOpt,
+            authrequestoptSync,
+            LastAuthRequestOpt = authrequestoptSync
+        };
+
+        enum State
+        {
+            FirstState,
+            stateClosed = FirstState,
+            stateHandshake,
+            stateEncryptionStarted,
+            stateEncryptionEstablished,
+            stateAuthenticationStarted,
+            stateAuthenticationEstablished,
+            stateService,
+            LastState = stateService
+        };
+
+
+        const std::string RequestStrings[] = ${RCDPV1_REQUEST_STRINGS};
+        BOOST_STATIC_ASSERT(sizeof(RequestStrings)/sizeof(RequestStrings[0]) == LastRequest-FirstRequest+1);
+        inline bool isValidRequest(int aVal)
+        {
+            return (aVal >= FirstRequest && aVal <= LastRequest);
+        }
+        inline std::string str(Request aRequest)
+        {
+            return RequestStrings[aRequest-FirstRequest];
+        }
+        inline bool parseRequest(const std::string& aRequestStr, Request& aRequest)
+        {
+            for (int i = FirstRequest; i <= LastRequest; ++i)
+            {
+                Request myRequest = static_cast<Request>(i);
+                if (str(myRequest) == aRequestStr)
+                {
+                    aRequest = myRequest;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        const std::string ResponseStrings[] = ${RCDPV1_RESPONSE_STRINGS};
+        BOOST_STATIC_ASSERT(sizeof(ResponseStrings)/sizeof(ResponseStrings[0]) == LastResponse-FirstResponse+1);
+        inline bool isValidResponse(int aVal)
+        {
+            return (aVal >= FirstResponse && aVal <= LastResponse);
+        }
+        inline std::string str(Response aResponse)
+        {
+            return ResponseStrings[aResponse-FirstResponse];
+        }
+        inline bool parseResponse(const std::string& aResponseStr, Response& aResponse)
+        {
+            for (int i = FirstResponse; i <= LastResponse; ++i)
+            {
+                Response myResponse = static_cast<Response>(i);
+                if (str(myResponse) == aResponseStr)
+                {
+                    aResponse = myResponse;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        const std::string AuthRequestOptStrings[] = ${RCDPV1_AUTH_REQUEST_OPT_STRINGS};
+        BOOST_STATIC_ASSERT(sizeof(AuthRequestOptStrings)/sizeof(AuthRequestOptStrings[0]) == LastAuthRequestOpt-FirstAuthRequestOpt+1);
+        inline bool isValidAuthRequestOpt(int aVal)
+        {
+            return (aVal >= FirstAuthRequestOpt && aVal <= LastAuthRequestOpt);
+        }
+        inline std::string str(AuthRequestOpt aAuthRequestOpt)
+        {
+            return AuthRequestOptStrings[aAuthRequestOpt-FirstAuthRequestOpt];
+        }
+        inline bool parseAuthRequestOpt(const std::string& aAuthRequestOptStr, AuthRequestOpt& aAuthRequestOpt)
+        {
+            for (int i = FirstAuthRequestOpt; i <= LastAuthRequestOpt; ++i)
+            {
+                AuthRequestOpt myAuthRequestOpt = static_cast<AuthRequestOpt>(i);
+                if (str(myAuthRequestOpt) == aAuthRequestOptStr)
+                {
+                    aAuthRequestOpt = myAuthRequestOpt;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static const std::string FormatRequestChain = ${RCDPV1_FORMAT_REQUEST_CHAIN};
+
+        const std::string StateStrings[] = ${RCDPV1_STATE_STRINGS};
+        BOOST_STATIC_ASSERT(sizeof(StateStrings)/sizeof(StateStrings[0]) == LastState-FirstState+1);
+        inline bool isValidState(int aVal)
+        {
+            return (aVal >= FirstState && aVal <= LastState);
+        }
+        inline std::string str(State aState)
+        {
+            return StateStrings[aState-FirstState];
+        }
+
+
+        std::string encryptWithSessionKey(const std::string& aMsg, const std::string& aSessionKey);
+        std::string encryptWithSessionKeyAndRandomIV(const std::string& aMsg, const std::string& aSessionKey);
+        std::string decryptWithSessionKey(const std::string& aMsg, const std::string& aSessionKey);
+        std::string decryptWithSessionKeyAndRandomIV(const std::string& aMsg, const std::string& aSessionKey);
+
+        typedef std::vector<unsigned char> (*DigestSignFunc)(const void* aContext, const std::vector<unsigned char>& aMsg, const ta::SignUtils::Digest aDigestType, const std::string& aPemPrivKeyId);
+        // Sign the message with the digest signing function when supplied, otherwise with built-in signing function
+        //@return "<signed-digest> <data>"
+        std::string signMsg(const std::string& aMsg, const std::string& aPemPrivKeyPath, DigestSignFunc aDigestSignCbk = NULL, const void* aDigestSignCbkContext = NULL);
+
+        //@param[in] aMsg message as "<signed-digest> <data>"
+        //@return the original message recovered from the signed message
+        std::string verifySignedMsg(const std::string& aSignedMsg, const std::string& aPemPubKeyPath);
+        std::string verifySignedMsg(const std::string& aSignedMsg, const std::vector<unsigned char>& aPemPubKey);
+    } // rcdpv1
+
+    namespace rcdpv2
+    {
+        const std::string V_2_0 = ${RCDP_VERSION_2_0};
+        const std::string V_2_1 = ${RCDP_VERSION_2_1};
+
+        const std::string ClientSupportedRcdpVersions[] = ${CLIENT_SUPPORTED_RCDPV2_VERSIONS};
+        const std::string ServerSupportdRcdpVersions[] = ${SERVER_SUPPORTED_RCDPV2_VERSIONS};
+
+        const std::string HttpRequestUriPrefix  = ${RCDPV2_HTTP_REQUEST_URI_PREFIX};
+        const std::string HttpSidCookieName = ${RCDPV2_HTTP_SID_COOKIE_NAME};
+
+        //
+        // Requests
+        //
+        enum Request
+        {
+            FirstRequest,
+            reqEOC = FirstRequest,
+            reqError,
+            reqHello,
+            reqHandshake,
+            reqAuthRequirements,
+            reqAuthentication,
+            reqChangePassword,
+            reqLastMessages,
+            reqCert,
+            LastRequest = reqCert
+        };
+        const std::string requestParamNameCallerAppDescription = ${RCDPV2_REQUEST_PARAM_NAME_CALLER_APP_DESCRIPTION};
+        const std::string requestParamNameCallerHwDescription = ${RCDPV2_REQUEST_PARAM_NAME_CALLER_HW_DESCRIPTION};
+        const std::string requestParamNameErrorCode = ${RCDPV2_REQUEST_PARAM_NAME_ERROR_CODE};
+        const std::string requestParamNameErrorDescription = ${RCDPV2_REQUEST_PARAM_NAME_ERROR_DESCRIPTION};
+        const std::string requestParamNameReason = ${RCDPV2_REQUEST_PARAM_NAME_REASON};
+        const std::string requestParamNameCallerUtc = ${RCDPV2_REQUEST_PARAM_NAME_CALLER_UTC};
+        const std::string requestParamNameService = ${RCDPV2_REQUEST_PARAM_NAME_SERVICE};
+        const std::string requestParamNameLastMessagesFromUtc = ${RCDPV2_REQUEST_PARAM_NAME_LAST_MESSAGES_FROM_UTC};
+        const std::string requestParamNameKeyPair = ${RCDPV2_REQUEST_PARAM_NAME_KEYPAIR};
+        const std::string requestParamNamePubKey = ${RCDPV2_REQUEST_PARAM_NAME_PUBKEY};
+        const std::string requestParamNamePrivKey = ${RCDPV2_REQUEST_PARAM_NAME_PRIVKEY};
+        const std::string requestParamNameCertFormat = ${RCDPV2_REQUEST_PARAM_NAME_CERT_FORMAT};
+        const std::string requestParamNameCertIncludeChain = ${RCDPV2_REQUEST_PARAM_NAME_CERT_INCLUDE_CHAIN};
+        const std::string requestParamNameCertOutOfBand = ${RCDPV2_REQUEST_PARAM_NAME_CERT_OUT_OF_BAND};
+        const std::string requestParamNameResolved = ${RCDPV2_REQUEST_PARAM_NAME_RESOLVED};
+        const std::string requestParamNameDigests = ${RCDPV2_REQUEST_PARAM_NAME_DIGESTS};
+        const std::string requestParamNameUri = ${RCDPV2_REQUEST_PARAM_NAME_URI};
+        const std::string requestParamNameIps = ${RCDPV2_REQUEST_PARAM_NAME_IPS};
+        const std::string requestParamNameDigest = ${RCDPV2_REQUEST_PARAM_NAME_DIGEST};
+        const std::string requestParamNameName = ${RCDPV2_REQUEST_PARAM_NAME_NAME};
+        const std::string requestParamNameValue = ${RCDPV2_REQUEST_PARAM_NAME_VALUE};
+        const std::string requestParamNameResponses = ${RCDPV2_REQUEST_PARAM_NAME_RESPONSES};
+        const std::string requestParamNameOldPassword = ${RCDPV2_REQUEST_PARAM_NAME_OLD_PASSWORD};
+        const std::string requestParamNameNewPassword = ${RCDPV2_REQUEST_PARAM_NAME_NEW_PASSWORD};
+
+
+        const std::string RequestStrings[] = ${RCDPV2_REQUEST_STRINGS};
+        BOOST_STATIC_ASSERT(sizeof(RequestStrings)/sizeof(RequestStrings[0]) == LastRequest-FirstRequest+1);
+        inline bool isValidRequest(int aVal)
+        {
+            return (aVal >= FirstRequest && aVal <= LastRequest);
+        }
+        inline std::string str(Request aRequest)
+        {
+            return RequestStrings[aRequest-FirstRequest];
+        }
+        inline bool parseRequest(const std::string& aRequestStr, Request& aRequest)
+        {
+            for (int i = FirstRequest; i <= LastRequest; ++i)
+            {
+                Request myRequest = static_cast<Request>(i);
+                if (str(myRequest) == aRequestStr)
+                {
+                    aRequest = myRequest;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //
+        // Responses
+        //
+        enum Response
+        {
+            FirstResponse,
+            respEOC = FirstResponse,
+            respError,
+            respHello,
+            respHandshake,
+            respAuthRequirements,
+            respAuthResult,
+            respLastMessages,
+            respCert,
+            LastResponse = respCert
+        };
+        const std::string responseParamNameStatus = ${RCDPV2_RESPONSE_PARAM_NAME_STATUS};
+        const std::string responseParamNameErrorCode = ${RCDPV2_RESPONSE_PARAM_NAME_ERROR_CODE};
+        const std::string responseParamNameErrorDescription = ${RCDPV2_RESPONSE_PARAM_NAME_ERROR_DESCRIPTION};
+        const std::string responseParamNameVersion = ${RCDPV2_RESPONSE_PARAM_NAME_VERSION};
+        const std::string responseParamNameReason = ${RCDPV2_RESPONSE_PARAM_NAME_REASON};
+        const std::string responseParamNameServerUtc = ${RCDPV2_RESPONSE_PARAM_NAME_SERVER_UTC};
+        const std::string responseParamNameCredTypes = ${RCDPV2_RESPONSE_PARAM_NAME_CRED_TYPES};
+        const std::string responseParamNameHwsigFormula = ${RCDPV2_RESPONSE_PARAM_NAME_HWSIG_FORMULA};
+        const std::string responseParamNamePasswordPrompt = ${RCDPV2_RESPONSE_PARAM_NAME_PASSWORD_PROMPT};
+        const std::string responseParamNameChallenges = ${RCDPV2_RESPONSE_PARAM_NAME_CHALLENGES};
+        const std::string responseParamNameName = ${RCDPV2_RESPONSE_PARAM_NAME_NAME};
+        const std::string responseParamNameValue = ${RCDPV2_RESPONSE_PARAM_NAME_VALUE};
+        const std::string responseParamNameResponseNames = ${RCDPV2_RESPONSE_PARAM_NAME_RESPONSE_NAMES};
+        const std::string responseParamNameAuthStatus = ${RCDPV2_RESPONSE_PARAM_NAME_AUTH_STATUS};
+        const std::string responseParamNamePasswordValidity = ${RCDPV2_RESPONSE_PARAM_NAME_PASSWORD_VALIDITY};
+        const std::string responseParamNameDelay = ${RCDPV2_RESPONSE_PARAM_NAME_DELAY};
+        const std::string responseParamNameLastMessages = ${RCDPV2_RESPONSE_PARAM_NAME_LAST_MESSAGES};
+        const std::string responseParamNameMessageUtc = ${RCDPV2_RESPONSE_PARAM_NAME_MESSAGE_UTC};
+        const std::string responseParamNameMessageText = ${RCDPV2_RESPONSE_PARAM_NAME_MESSAGE_TEXT};
+        const std::string responseParamNameCert = ${RCDPV2_RESPONSE_PARAM_NAME_CERT};
+        const std::string responseParamNameCertUrlTempl = ${RCDPV2_RESPONSE_PARAM_NAME_CERT_URL_TEMPL};
+        const std::string responseParamNameServiceUris = ${RCDPV2_RESPONSE_PARAM_NAME_SERVICE_URIS};
+        const std::string responseParamNameResolveServiceUris = ${RCDPV2_RESPONSE_PARAM_NAME_RESOLVE_SERVICE_URIS};
+        const std::string responseParamNameCalcServiceUrisDigest = ${RCDPV2_RESPONSE_PARAM_NAME_CALC_SERVICE_URIS_DIGEST};
+        const std::string responseParamNameExecuteSync = ${RCDPV2_RESPONSE_PARAM_NAME_EXECUTE_SYNC};
+
+        const std::string ResponseStrings[] = ${RCDPV2_RESPONSE_STRINGS};
+        BOOST_STATIC_ASSERT(sizeof(ResponseStrings)/sizeof(ResponseStrings[0]) == LastResponse-FirstResponse+1);
+        inline bool isValidResponse(int aVal)
+        {
+            return (aVal >= FirstResponse && aVal <= LastResponse);
+        }
+        inline std::string str(Response aResponse)
+        {
+            return ResponseStrings[aResponse-FirstResponse];
+        }
+        inline bool parseResponse(const std::string& aResponseStr, Response& aResponse)
+        {
+            for (int i = FirstResponse; i <= LastResponse; ++i)
+            {
+                Response myResponse = static_cast<Response>(i);
+                if (str(myResponse) == aResponseStr)
+                {
+                    aResponse = myResponse;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //
+        // States
+        //
+        enum State
+        {
+            FirstState,
+            stateClosed = FirstState,
+            stateHello,
+            stateConnected,
+            statePendingResponse,
+            stateAuthenticated,
+            LastState = stateAuthenticated
+        };
+
+        const std::string StateStrings[] = ${RCDPV2_STATE_STRINGS};
+        BOOST_STATIC_ASSERT(sizeof(StateStrings)/sizeof(StateStrings[0]) == LastState-FirstState+1);
+        inline bool isValidState(int aVal)
+        {
+            return (aVal >= FirstState && aVal <= LastState);
+        }
+        inline std::string str(State aState)
+        {
+            return StateStrings[aState-FirstState];
+        }
+
+
+    }// rcdpv2
+
+
+    const std::string CertDownloadUrlHostPlaceholder = ${CERT_DOWNLOAD_URL_HOST_PLACEHOLDER};
+
+} // resept

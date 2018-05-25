@@ -1,0 +1,21 @@
+Building libconfig-1.5 static library on Windows
+------------------------
+1. Download and extract libconfig source package from from http://www.hyperrealm.com/libconfig/libconfig-1.5.tar.gz
+2. Open libconfig.sln in Visual Studio
+3. Do the following modifications in 'libconfig++' project:
+	- Change project type to static library
+	- Define LIBCONFIGXX_STATIC instead of LIBCONFIGXX_EXPORTS macro
+	- Disable optimization (/Od) and enable debug info (/Zi)
+	- Build the project for "Release" configuration
+4. Copy 
+Release\libconfig++.lib 
+and 
+lib\libconfig++.Release\vc12.pdb 
+to 
+Software\Import\libconfig-1.5\lib\win32\shared_crt\
+5. Copy libconfig.h++ to Software\Import\libconfig-1.5\
+6. Change LIBCONFIG_LIB_VERSION_DIR for KeyTalk Windows Client Common Property page:
+   - VC -> View -> Property Manger -> <Select any project> -> KeyTalk Windows Client Common -> Double Click -> User Macros
+   - alternatively you can edit WinClientCommon.props by hand and reload VC solution afterwards
+Rebuild and retest KeyTalk Windows client
+

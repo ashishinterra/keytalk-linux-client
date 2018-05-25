@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/" >
+      <file>../librclientappcommon/rclient/icon_info.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,154 @@
+I. Setting up build servers for KeyTalk Server and Linux Client
+======================================================================================
+
+1. Take an appropriate development VM as a starting point to make the things faster
+
+2. Login to the VM.
+
+    echo localhost > /etc/hostname
+    hostname -F /etc/hostname
+    timedatectl set-timezone UTC
+
+3. Get KeyTalk
+
+Upload your buildserver ssh private key to /root/.ssh/ directory and make it only readable by root.
+This gives buildserver a read-only access to the source code repository without password prompt.
+
+    rm -rf /Resept /builds /keytalk
+    git clone ssh://git@stash.keytalk.com:7999/keytalk/core.git /builds
+
+4. Setup build server
+
+    git clone https://github.com/kindkaktus/CcPy /ccpy
+
+Bootstrap project build configuration (will be later automatically updated from the repository on each build)
+
+For KeyTalk server
+
+    cp /builds/Software/ContinuousIntegration/cc.py/rsvr/*.conf /etc/
+    cp /builds/Software/ContinuousIntegration/cc.py/rsvr/cron.d/ccpy /etc/cron.d/
+
+Or for KeyTalk Linux client
+
+    cp /builds/Software/ContinuousIntegration/cc.py/rlinuxclient/*.conf /etc/
+
+
+Setup log rotation
+
+    printf "
+/var/log/ccpyd.log {
+     compress
+     create 0664
+     rotate 3
+     size=1M
+}
+" > /etc/logrotate.d/ccpy
+
+
+5. Setup mailclient
+
+    apt-get -y install mailutils
+    dpkg-reconfigure exim4-config
+
+- choose "internet site" option
+- accept defaults for the rest
+
+
+6. Invoke the build manually to bootstrap the remaining configuration and to verify it works:
+
+    /ccpy/ccpy.sh
+
+Log file is stored at /var/log/ccpyd.log
+
+
+7. Convert local VMX VM to OVF with Tools/convertVmxToOvf.py and import it to ESX
+
+
+
+
+II. Setting up multi-platform integration server for KeyTalk Linux Client
+============================================================================
+
+1. Install Debian Linux 8 64-bit
+
+2. Configure your system
+
+Enable ssh for root:
+
+    vi /etc/ssh/sshd_config
+
+set PermitRootLogin to yes
+
+    service sshd restart
+
+Setup time
+
+    timedatectl set-timezone UTC
+
+Set hostname
+
+    echo keytalk-linux-client-mplatform-bsvr > /etc/hostname
+    hostname -F /etc/hostname
+
+Install prerequisites
+
+    apt-get update
+    apt-get install -y git wget
+    wget -qO- https://get.docker.com/ | sh
+
+
+3. Get KeyTalk
+
+Upload KeyTalk buildserver ssh keys id_rsa and id_rsa.pub to /root/.ssh/ and make id_rsa only accessible by root.
+This gives a read-only access to the source code repository without password prompt.
+
+    git clone ssh://git@stash.keytalk.com:7999/keytalk/core.git /builds
+
+Allow passwordless logins to KeyTalk Linux build server for ourselves and for the guest containers
+
+    ssh-copy-id root@192.168.33.109
+    ssh-copy-id root@192.168.33.110
+
+Build guest images from Dockerfiles
+
+    cd /builds/Software/Client/TestProjects/testReseptInstaller/linux
+    ./build_multiplatform_guest_images.sh
+
+
+4. Setup build server
+
+    git clone https://github.com/kindkaktus/CcPy /ccpy
+
+Bootstrap project build configuration (will be later automatically updated from the repository on each build)
+
+    cp /builds/Software/ContinuousIntegration/cc.py/rlinuxclient.mplatform/*.conf /etc/
+
+    printf "
+/var/log/ccpyd.log {
+     compress
+     create 0664
+     rotate 3
+     size=1M
+}
+" > /etc/logrotate.d/ccpy
+
+
+5. Setup mailclient
+
+    apt-get -y install mailutils
+    dpkg-reconfigure exim4-config
+
+- choose "internet site" option
+- accept defaults for the rest
+
+
+7. Invoke the build manually to bootstrap the remaining configuration and to verify it works:
+
+    /ccpy/ccpy.sh
+
+    Log file is stored at /var/log/ccpyd.log
+
+
+8. Convert local VMX VM to OVF with Tools/convertVmxToOvf.py and import it to ESX
+
+

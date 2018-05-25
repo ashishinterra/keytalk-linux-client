@@ -1,0 +1,35 @@
+Building libconfig++-1.5.0 static libraries for Linux KeyTalk Client
+------------------------------------------------------------------------
+
+Notice: though libconfig++ is available from Linux packages, Debian 8 and Ubuntu 16.04 (platforms supported by KeyTalk client) use different versions of this library (1.4.9 and 1.5.0 respectively) while referring to them as the same version (libconfig++.so.9). Unfortunately 1.4.9 is not binary compatible with 1.5.0 (undefined symbol: _ZN9libconfig7SettingaSERKSs when trying to use 1.5.0 on Ubuntu).
+We don't wont to cope with such a dependency hell hence we build the library ourselves.
+
+apt -y install automake
+
+wget https://github.com/hyperrealm/libconfig/archive/v1.5.tar.gz
+tar -xzf v1.5.tar.gz
+cd libconfig-1.5
+aclocal
+autoconf
+autoheader
+automake --add-missing
+./configure
+
+Fix compilation on 64-bit platforms: open lib/Makefile and add after CPPFLAGS are defined:
+
+LBITS:=$(shell getconf LONG_BIT)
+ifeq ($(LBITS),64)
+CPPFLAGS+=-fPIC
+endif
+
+make
+OSSPEC=$(uname -s | tr "[:upper:]" "[:lower:]")-$(uname -r | cut -d '-' -f 1)-$(uname -m | cut -d '-' -f 1)
+cp ./lib/libconfig.h++ /keytalk/Software/Import/libconfig-1.5/
+mkdir /keytalk/Software/Import/libconfig-1.5/lib/${OSSPEC}/
+cp ./lib/.libs/libconfig++.a /keytalk/Software/Import/libconfig-1.5/lib/${OSSPEC}/
+
+Update:
+- LIBCONFIG_LIB_VERSION_DIR in mk/keytalk.linux.mk
+
+Rebuild and retest KeyTalk Linux client
+

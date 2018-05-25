@@ -1,0 +1,13 @@
+<Include>
+  <?define ProductName="${PRODUCT_NAME}" ?>
+  <?define UpgradeCode="CD9B7FDC-525B-4fb1-BEAC-7C10049318B2" ?>
+  <?define ManufacturerName="${COMPANY_NAME}" ?>
+  <?define MajorVersion="$(major)" ?>
+  <?define MinorVersion="$(minor)" ?>
+  <?define SubminorVersion="$(subminor)" ?>
+  <?define ReseptSourceDir="..\..\..\Export" ?>
+  <!--Product code shall be different per version in order upgrades to work correctly (@note make sure each version component is one digit only)-->
+  <?define ProductCode="3F104FDD-5267-4fd2-A1EA-D7CF31DD6$(var.MajorVersion)$(var.MinorVersion)$(var.SubminorVersion)" ?>
+  <!--Product code used prior to 4.3 incl 3.x-->
+  <?define Pre43ProductCode="3F104FDD-5267-4fd2-A1EA-D7CF31DD64D3" ?>
+</Include>

@@ -1,0 +1,20 @@
+ConfigVersion = "1.0";
+Providers = ( 
+  {
+    Name = "<will-be-set>";
+    ContentVersion = 0;
+    CAs = ["<will-be-set>"]; 
+    LogLevel = "DEBUG";
+    Server = "192.168.1.105";
+    Services = ( 
+      {
+        CertValidPercent = 25;
+        CertFormat = "P12";
+        CertChain = false;
+        Name = "CUST_ANO_SQLITE_TESTUI";
+        DefaultUri = "https://r4webdemo.gotdns.com/";
+        ProxySettings = "No";
+        KeyAgreement = "R3";
+        Users = [ "DemoUser" ];
+      });
+  } );

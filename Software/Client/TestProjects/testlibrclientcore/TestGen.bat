@@ -1,0 +1,1 @@
+..\..\..\Import\python-2.7\python ..\..\..\Import\cxxtest\bin\cxxtestgen --have-eh --have-std --part -o testlibrclientcore.cpp NativeCertStoreTest.h SettingsTest.h SettingsInstallationTest.h TaskSettingsTest.h TaskUtilsTest.h RcdpTest.h RcdpServerStressTest.h

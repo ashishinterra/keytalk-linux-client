@@ -1,0 +1,38 @@
+Instructions for building and installing libcurl-7.54 static library with MSVS 2013 for KeyTalk client on Windows 7
+----------------------------------------------------------------------------
+
+NOTICE that we use WinSSL (schannel) TLS backend instead of OpenSSL like we do on Linux platforms (for KeyTalk Linux client)
+The reason for that is that WinSSL knows about Windows certificate store, which is necessary e.g. for TLS handshake certificate validation.
+Of course this choice comes at a price, namely:
+- WinSSL will cut TLS handshake if it does not find CLR or OSCP lists in the server's issuers CAs. I believe this is way too strict thus I explicitly disable certificate revocation checks with CURLSSLOPT_NO_REVOKE option
+- WinSSL does not allow overriding the location of TLS verification CAs (CURLOPT_CAINFO) normally stored in the system cert store.
+
+Installation
+---------------
+
+1. Download and extract curl source from https://curl.haxx.se/download/
+  Do NOT use source from git repository since it requires an extra code generation step
+
+2. Build static library
+
+Open command prompt and call vcvarsall.bat from VS directory to expand VC environment variables e.g.
+"C:\Program Files\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
+
+cd to 'winbuild' directory under the curl source tree and build libcurl using:
+
+    nmake -f Makefile.vc MODE=static VC=12 MACHINE=x86 ENABLE_IPV6=yes DEBUG=no ENABLE_IDN=no ENABLE_WINSSL=yes
+
+3. Install
+
+Copy builds\libcurl-vc12-x86-release-static-ipv6-sspi-winssl\include to Software\Import\curl-7.54\include\win32\
+Copy builds\libcurl-vc12-x86-release-static-ipv6-sspi-winssl\lib\libcurl_a.lib to Software\Import\curl-7.54\lib\win32\shared_crt\libcurl.lib
+
+Update CURL_LIB_VERSION_DIR in Software\WinClientCommon.props
+ - VC -> View -> Property Manger -> <Select any project> -> KeyTalk Windows Client Common -> Double Click -> User Macros
+- alternatively you can edit WinClientCommon.props by hand and reload VC solution afterwards
+
+Add new files to the source control
+Remove the old version of curl
+
+4. Rebuild and retest KeyTalk client
+
