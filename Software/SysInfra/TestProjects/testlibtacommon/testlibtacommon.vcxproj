@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{78B0AC5F-D0EE-4F91-B4E3-C4EB4350B57C}</ProjectGuid>
+    <RootNamespace>testlibtacommon</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\WinClientCommon.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\Export\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+    <ExtensionsToDeleteOnClean>*.obj%3b*.ilk%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.pgc%3b*.pgd%3b$(TargetPath)</ExtensionsToDeleteOnClean>
+    <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>Generating test...</Message>
+      <Command>call TestGen.bat</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../Projects/libtacommon;../../Projects/libtalogger;..\..\..\Import\$(OPENSSL_INCLUDE_DIR);../../../Import/cxxtest;../../../Import/$(BOOST_INCLUDE_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;WINVER=_WIN32_WINNT_WS08;_WIN32_WINNT=_WIN32_WINNT_WS08;CXXTEST_HAVE_EH;_CRT_SECURE_NO_DEPRECATE;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4290;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libtacommon.lib;libtalogger.lib;libconfig++.lib;ws2_32.lib;Dbghelp.lib;Psapi.lib;Setupapi.lib;Iphlpapi.lib;libeay32.lib;ssleay32.lib;crypt32.lib;libcurl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Projects\Export;..\..\..\Import\$(BOOST_FILESYSTEM_LIB_DIR);..\..\..\Import\$(BOOST_THREAD_LIB_DIR);..\..\..\Import\$(BOOST_REGEX_LIB_DIR);..\..\..\Import\$(BOOST_DATETIME_LIB_DIR);..\..\..\Import\$(BOOST_SYSTEM_LIB_DIR);..\..\..\Import\$(BOOST_CHRONO_LIB_DIR);..\..\..\Import\$(LIBCONFIG_LIB_DIR);..\..\..\Import\$(OPENSSL_LIB_DIR);..\..\..\Import\$(CURL_LIB_DIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(SolutionDir)app.windows.compatibility.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+    <PostBuildEvent>
+      <Message>Copying files...</Message>
+      <Command>copy ..\..\Projects\Export\libtalogger.dll "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy log.conf.win32  "$(OutDir)log.conf"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy naive_http_server.py "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy naive_http_server.py "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy test.html "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy blob.tst "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy *.bmp "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy *.png "$(OutDir)"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+DEL /Q "$(OutDir)CA\"
+xcopy /E /Y "..\CA"  "$(OutDir)CA\"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+copy orig.data "$(OutDir)CA\"
+IF %25ERRORLEVEL%25 NEQ 0 exit 1
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="testlibtacommon.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="SingletonTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CertUtilsTest.h" />
+    <ClInclude Include="CommonTest.h" />
+    <ClInclude Include="DynLibLoaderTest.h" />
+    <ClInclude Include="DnsUtilsClientTest.h" />
+    <ClInclude Include="EcUtilsTest.h" />
+    <ClInclude Include="EncodingUtilsTest.h" />
+    <ClInclude Include="GlobFixture.h" />
+    <ClInclude Include="HashUtilsTest.h" />
+    <ClInclude Include="LibConfigWrapperTest.h" />
+    <ClInclude Include="LoggerTest.h" />
+    <ClInclude Include="NetUtilsTest.h" />
+    <ClInclude Include="OpenSSLWrappersTest.h" />
+    <ClInclude Include="OsInfoUtilsTest.h" />
+    <ClInclude Include="OsUserInfoTest.h" />
+    <ClInclude Include="PngUtilsTest.h" />
+    <ClInclude Include="ProcessTest.h" />
+    <ClInclude Include="RsaUtilsTest.h" />
+    <ClInclude Include="RegistryTest.h" />
+    <ClInclude Include="ScopedResourceTest.h" />
+    <ClInclude Include="SignUtilsTest.h" />
+    <ClInclude Include="SingletonTest.h" />
+    <ClInclude Include="StringsTest.h" />
+    <ClInclude Include="SysInfoTest.h" />
+    <ClInclude Include="TcpClientTest.h" />
+    <ClInclude Include="TimeUtilsTest.h" />
+    <ClInclude Include="URLTest.h" />
+    <ClInclude Include="UtilsTest.h" />
+    <ClInclude Include="VersionTest.h" />
+    <ClInclude Include="WindowsHwUtilsTest.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="2038x21.png" />
+    <Image Include="2038x21x24.bmp" />
+    <Image Include="30x32.png" />
+    <Image Include="30x32x8.bmp" />
+    <Image Include="49x55.png" />
+    <Image Include="49x55x24.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="blob.tst" />
+    <None Include="log.conf.win32" />
+    <None Include="naive_http_server.py" />
+    <None Include="test.html" />
+    <None Include="TestGen.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Client\Projects\GenerateFiles\GenerateFiles.vcxproj">
+      <Project>{16ef6888-2a6a-447e-9dff-00f112a53fff}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Client\TestProjects\DependentLibDeployer\DependentLibDeployer.vcxproj">
+      <Project>{815038d0-0519-4a67-a340-715b01119f18}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Projects\libtacommon\libtacommon.vcxproj">
+      <Project>{10a0b8a7-7ee1-419f-8966-936ad59c2f9d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Projects\libtalogger\libtalogger.vcxproj">
+      <Project>{65cfc310-1979-4d39-9fc3-01c24556b33e}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

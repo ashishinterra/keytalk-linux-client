@@ -1,0 +1,31 @@
+CHANGE HISTORY of the make templates
+---------------------------------------------------
+
+0.4, 27 March 2018
+---------------------------
+  - CHANGED: Removed support for 'cleanthis' target as it created some obscurity
+  - CHANGED: Removed OpenBSD support
+
+0.3, 27 Nov 2013
+-----------------------------
+  - FIXED Improved performance by eliminating unnecessary relinking
+  - ADDED guard checks that PROG or STATIC_LIB variables are defined
+  - ADDED support for "cleanthis" target for static libs, effectively equals to "clean"
+  - CHANGED Removed GSOAP support
+  - CHANGED Increased the number of dependent libs to 15
+  - CHANGED created default CFLAGS and LFLAGS which resulted in more compact makefiles
+  - CHANGED removed obsolete darwin target
+
+0.2.5432, 07 October 2008
+-----------------------------
+  - ADDED: STRIP flag to progs
+  - FIXED: Link errors did not cause make to fail on OpenBSD.
+       The reason was that the exit code of the pipeline command used to suppress OpenBSD-specific warnings:
+       ( $(LINKER) $(OBJS) $(LIBS) $(LFLAGS) -o $(OUT_DIR)/$(.TARGET) 3>&1 1>&2 2>&3 | sed "/In function/N;/warning.*misused, please use/d" ) 3>&1 1>&2 2>&3
+       was the exit code of the last command on the pipeline that is 'sed' which almost always succeeded.
+       The fix was in removing this warning suppression filter.
+   - FIXED: conditionals syntax for GNU make
+
+0.1.5241, 26 August 2008
+-----------------------------
+  - Initial version

@@ -1,0 +1,53 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3979344297/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3979344297.dir/build.make CMakeFiles/cmTryCompileExec3979344297.dir/build
+gmake[1]: Entering directory `/keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3979344297.dir/CheckSymbolExists.c.o
+/opt/rh/devtoolset-2/root/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3979344297.dir/CheckSymbolExists.c.o   -c /keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec3979344297
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3979344297.dir/link.txt --verbose=1
+/opt/rh/devtoolset-2/root/usr/bin/cc       CMakeFiles/cmTryCompileExec3979344297.dir/CheckSymbolExists.c.o  -o cmTryCompileExec3979344297 -rdynamic 
+CMakeFiles/cmTryCompileExec3979344297.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+gmake[1]: Leaving directory `/keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp'
+gmake[1]: *** [cmTryCompileExec3979344297] Error 1
+gmake: *** [cmTryCompileExec3979344297/fast] Error 2
+
+File /keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/gmake "cmTryCompileExec3658403114/fast"
+/usr/bin/gmake -f CMakeFiles/cmTryCompileExec3658403114.dir/build.make CMakeFiles/cmTryCompileExec3658403114.dir/build
+gmake[1]: Entering directory `/keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3658403114.dir/CheckFunctionExists.c.o
+/opt/rh/devtoolset-2/root/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec3658403114.dir/CheckFunctionExists.c.o   -c /usr/share/cmake/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec3658403114
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3658403114.dir/link.txt --verbose=1
+/opt/rh/devtoolset-2/root/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec3658403114.dir/CheckFunctionExists.c.o  -o cmTryCompileExec3658403114 -rdynamic -lpthreads 
+/opt/rh/devtoolset-2/root/usr/libexec/gcc/x86_64-redhat-linux/4.8.2/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+gmake[1]: Leaving directory `/keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/CMakeTmp'
+gmake[1]: *** [cmTryCompileExec3658403114] Error 1
+gmake: *** [cmTryCompileExec3658403114/fast] Error 2
+
+

@@ -1,0 +1,110 @@
+#############################################################################
+#
+#  Name          mk.README
+#  Description : README for .mk templates
+#
+#############################################################################
+
+This is the README file for make templates. These templates should be included into the conventional makefiles.
+
+linux.staticlib.mk - build static library on Linux
+linux.prog.mk - build executable or shared library on Linux
+
+The make templates support GNU make on Linux platforms.
+C and C++ compilation are supported, .c extensions is expected for C source files, .cpp extension is expected for C++ source files. Additionally the integration with CxxTest unit test framework (http://cxxtest.sourceforge.net/) is provided.
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------
+Tagrets supported by *.staticlib.mk:
+
+release:
+		Build the static library. This is the default target.
+
+debug:
+		Build the static library.
+
+clean:
+		Remove the static library and intermediate object files.
+
+
+Variables used by *.staticlib.mk:
+
+STATIC_LIB	The name of the static library to build. The name is expected to be fully-qualified, e.g. libFoo.a
+
+SRCS		The list of source files to build the library. The list should contain only file names without specifying their directory.
+		Only .c or .cpp files are used, other extensions are just ignored.
+
+DEPS		The list of source dependendencies (e.g. C/C++ header files). The list should contain only file names without specifying their directory.
+		The dependendencies should be in the same directory as the source files.
+
+SRCS_DIR	Directory containing the source files.
+
+EXTRA_CFLAGS	Extra flags for CC/CXX compiler
+
+INCLUDES	List of additional directories to look for include files understood by the compiler (e.g. '-I' - prefixed for gcc).
+
+OUT_DIR       Output directory to place the static library created.
+
+PRE_BUILD	User-implemented rule executed before the build starts
+
+POST_BUILD	User-implemented rule executed after the build finishes
+
+POST_CLEAN	User-implemented rule executed after the clean rule finishes
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Tagrets supported by *.prog.mk:
+
+release:
+		Build the program/shared library and build dependencies for release target. This is the default target.
+
+debug:
+		Build the program/shared library and build dependencies for debug target.
+
+clean:
+		Remove the program/shared library, intermediate object files, generated files and built dependencies.
+
+
+Variables used by *.prog.mk:
+
+PROG		The name of the program/shared library to build. The library name is expected to be fully-qualified, e.g. libFoo.so
+
+SRCS		The list of source files to build the program/shared library. The list should contain only file names without specifying their directory.
+		Only .c or .cpp files are used, other extensions are just ignored.
+
+DEPS		The list of source dependendencies (e.g. C/C++ header files). The list should contain only file names without specifying their directory.
+		The dependendencies should be in the same directory as the source files.
+
+SRCS_DIR	Directory containing the source files.
+
+EXTRA_CFLAGS	Extra flags for CC/CXX compiler
+
+INCLUDES	List of additional directories to look for include files understood by the compiler (e.g. '-I' - prefixed for gcc).
+
+EXTRA_LFLAGS		Extra flags for CC/CXX linker
+
+LIBS		The list of libraries to link against understood by the linker (e.g. '-l' - prefixed for gcc).
+
+OUT_DIR	Output directory to place the program/shared library created.
+
+PRE_BUILD	User-implemented rule executed before the build starts
+
+POST_BUILD	User-implemented rule executed after the build finishes
+
+POST_CLEAN	User-implemented rule executed after clean rule finishes
+
+DEP{N}	N=1..15. List of dependencies (e.g. libraries) which should be built before the main target.
+
+DEP1_DIR{N} N=1..15. Directories comprising makefiles to build the dependencies above.
+
+CXX_TESTS	A subset of DEPS representing tests for CxxTest framework. If CXX_TESTS variable is defined, CXX_TEST_GENERATED_CPP and CXX_TEST_GENERATOR variables should be also defined (see below).
+
+CXX_TEST_GENERATED_CPP	C++ source file from the SRCS list which does not exist apriori and should be generated.
+
+CXX_TEST_GENERATOR Generator program for the CXX_TEST_GENERATED_CPP above
+
+EXT_PROG{N}
+EXT_PROG{N}_CFLAGS
+EXT_PROG{N}_INCLUDES
+EXT_PROG{N}_LFLAGS
+EXT_PROG{N}_LIBS
+EXT_PROG{N}_CLEAN N=1..3. Variables to build additional external programs from the same sources. EXT_PROG_CLEAN target should be implemented by the user.

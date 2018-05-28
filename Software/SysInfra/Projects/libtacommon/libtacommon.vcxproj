@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{10A0B8A7-7EE1-419F-8966-936AD59C2F9D}</ProjectGuid>
+    <RootNamespace>libtacommon</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\WinClientCommon.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\Export\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command />
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\;..\libtalogger;..\..\..\Import\$(OPENSSL_INCLUDE_DIR);..\..\..\Import\$(LIBCONFIG_INCLUDE_DIR);..\..\..\Import\$(BOOST_INCLUDE_DIR);..\..\..\Import\$(CURL_INCLUDE_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;WINVER=_WIN32_WINNT_WS08;_WIN32_WINNT=_WIN32_WINNT_WS08;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;LIBCONFIG_STATIC;LIBCONFIGXX_STATIC;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader />
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/wd4512 /wd4127 %(AdditionalOptions)</AdditionalOptions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ta\certutils.cpp" />
+    <ClCompile Include="ta\dnsutils.cpp" />
+    <ClCompile Include="ta\dynlibloader.cpp" />
+    <ClCompile Include="ta\ecutils.cpp" />
+    <ClCompile Include="ta\encodingutils.cpp" />
+    <ClCompile Include="ta\hashutils.cpp" />
+    <ClCompile Include="ta\libconfigwrapper.cpp" />
+    <ClCompile Include="ta\netutils.cpp" />
+    <ClCompile Include="ta\opensslapp.cpp" />
+    <ClCompile Include="ta\opensslwrappers.cpp" />
+    <ClCompile Include="ta\osinfoutils.cpp" />
+    <ClCompile Include="ta\osuserinfo.cpp" />
+    <ClCompile Include="ta\pngutils.cpp" />
+    <ClCompile Include="ta\process.cpp" />
+    <ClCompile Include="ta\registry.cpp" />
+    <ClCompile Include="ta\rsautils.cpp" />
+    <ClCompile Include="ta\signutils.cpp" />
+    <ClCompile Include="ta\sysinfo.cpp" />
+    <ClCompile Include="ta\strings.cpp" />
+    <ClCompile Include="ta\tcpclient.cpp" />
+    <ClCompile Include="ta\tcpserver.cpp" />
+    <ClCompile Include="ta\tcpsocketutils.cpp" />
+    <ClCompile Include="ta\thread.cpp" />
+    <ClCompile Include="ta\timeutils.cpp" />
+    <ClCompile Include="ta\url.cpp" />
+    <ClCompile Include="ta\utils.cpp" />
+    <ClCompile Include="ta\version.cpp" />
+    <ClCompile Include="ta\windowshddutils.cpp" />
+    <ClCompile Include="ta\windowshwutils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ta\certutils.h" />
+    <ClInclude Include="ta\common.h" />
+    <ClInclude Include="ta\dnsutils.h" />
+    <ClInclude Include="ta\dynlibloader.h" />
+    <ClInclude Include="ta\ecutils.h" />
+    <ClInclude Include="ta\encodingutils.h" />
+    <ClInclude Include="ta\hashutils.h" />
+    <ClInclude Include="ta\libconfigwrapper.h" />
+    <ClInclude Include="ta\netutils.h" />
+    <ClInclude Include="ta\opensslapp.h" />
+    <ClInclude Include="ta\opensslwrappers.h" />
+    <ClInclude Include="ta\osinfoutils.h" />
+    <ClInclude Include="ta\osuserinfo.h" />
+    <ClInclude Include="ta\pngutils.h" />
+    <ClInclude Include="ta\process.h" />
+    <ClInclude Include="ta\proto.hpp" />
+    <ClInclude Include="ta\pthreadwrappers.hpp" />
+    <ClInclude Include="ta\registry.h" />
+    <ClInclude Include="ta\rsautils.h" />
+    <ClInclude Include="ta\scopedresource.hpp" />
+    <ClInclude Include="ta\signutils.h" />
+    <ClInclude Include="ta\singletonholder.hpp" />
+    <ClInclude Include="ta\strings.h" />
+    <ClInclude Include="ta\stringsimpl.hpp" />
+    <ClInclude Include="ta\sysinfo.h" />
+    <ClInclude Include="ta\tcpclient.h" />
+    <ClInclude Include="ta\tcpserver.h" />
+    <ClInclude Include="ta\tcpsocketutils.h" />
+    <ClInclude Include="ta\thread.h" />
+    <ClInclude Include="ta\timeutils.h" />
+    <ClInclude Include="ta\url.h" />
+    <ClInclude Include="ta\utils.h" />
+    <ClInclude Include="ta\utilsimpl.hpp" />
+    <ClInclude Include="ta\version.h" />
+    <ClInclude Include="ta\windowshddutils.h" />
+    <ClInclude Include="ta\windowshwutils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Client\Projects\GenerateFiles\GenerateFiles.vcxproj">
+      <Project>{16ef6888-2a6a-447e-9dff-00f112a53fff}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

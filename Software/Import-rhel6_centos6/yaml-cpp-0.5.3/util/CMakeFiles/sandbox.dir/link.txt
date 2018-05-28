@@ -1,0 +1,1 @@
+/opt/rh/devtoolset-2/root/usr/bin/c++   -O2    CMakeFiles/sandbox.dir/sandbox.cpp.o  -o sandbox -rdynamic ../libyaml-cpp.a 

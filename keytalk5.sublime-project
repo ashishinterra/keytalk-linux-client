@@ -1,0 +1,25 @@
+{
+	"build_systems":
+	[
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "\"C:\\Python-3.6\\python.exe\" -u \"$file\""
+		}
+	],
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				".git",
+				"__pycache__",
+				"Import",
+				"Export",
+				"testpykeytalk/in"
+			],
+			"path": "Software"
+		}
+	]
+}

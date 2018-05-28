@@ -1,0 +1,12 @@
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/debuggable.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/format.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/test/gmock-1.7.0/CMakeFiles/gmock.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/test/gmock-1.7.0/CMakeFiles/gmock_main.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/test/gmock-1.7.0/gtest/CMakeFiles/gtest.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/test/gmock-1.7.0/gtest/CMakeFiles/gtest_main.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/util/CMakeFiles/parse.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/util/CMakeFiles/read.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/releasable.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/test/CMakeFiles/run-tests.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/util/CMakeFiles/sandbox.dir
+/keytalk/Software/Import/yaml-cpp-release-0.5.3/CMakeFiles/yaml-cpp.dir

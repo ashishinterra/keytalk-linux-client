@@ -1,0 +1,427 @@
+Release Notes of KeyTalk
+==============================================
+
+server-5.3.0, in progress
+------------------------
+Supports upgrades from v5.2.1 and higher
+Supports RCDP 2.1.0 and 2.0.0
+Supports import of settings created in v5.2.0-v5.3.0, v4.6.0 and v4.6.2
+
+    - CHANGED: phased out executable and relay authentication modules
+    - CHANGED: always use DevID to store and check HWSIG
+    - CHANGED: allow reusing a previously issued user certificate
+    - CHANGED: added service admin account to manage KeyTalk via the web admin panel
+    - CHANGED: added DevID self-service account to manage self devices via the KeyTalk web admin panel
+    - CHANGED: 4-eye principle to allow service operator download certificte and key
+    - CHANGED: flexible hashing of the MySQL credentials
+    - CHANGED: added client certificate authentication against MySQL connector Db
+    - CHANGED: flexible MySQL Db field mapping for MySQL user table
+    - CHANGED: Reduced max validity for GlobalSign Organization SSL certificates from 36 to 24 months
+    - CHANGED: Allow MS CA as 3rd party certificate provider
+    - CHANGED: Add ePKI S/MIME GlobalSign as 3rd party certificate provider
+    - CHANGED: store issued S/MIME certificate to AD and OpenLDAP
+    - CHANGED: Allow RCDP caller to request a certificate download URL iso certificate BLOB
+    - FIXED: improve robustness of server PR generation
+    - FIXED: excessive server logging results in huge PR file
+    - FIXED: KeyTalk server runs out of disk space
+
+
+client-5.2.2, in progress
+------------------------
+    Linux client supports: Debian 8 x64, Debian 9 x64, Ubuntu 16.04 (LTS) x64
+    Windows client supports: Windows 7, Windows 8, Windows 10, Windows Server 2012
+    - ADDED Made Windows and Linux clients publicly available at https://github.com/KeyTalk/windows-linux-client.git
+    - CHANGED Phased out SDKs for Windows and Linux clients
+    - CHANGED Dropped support for http proxy in RCCD ini files (RCCD 2.0.0 -> 2.0.1)
+
+server-5.2.3, 5 December 2017
+------------------------
+Supports upgrades from v5.2.1 and higher
+Supports import of settings created in v5.2.0-v5.2.3, v4.6.0 and v4.6.2
+    - ADDED Allow logins to Web admin panel with client certificates
+         - use /usr/local/bin/keytalk/www/reset-admin-passwd to reset the admin's password
+    - ADDED Auditor, network admin and service operator roles to manage KeyTalk via Web admin panel
+    - ADDED Open the originally requested URL after logging in to the web admin panel
+    - CHANGED Dropped support for http proxy in RCCD ini files
+    - FIXED Do not show warning on the Web admin panel when the default gateway is not pingable
+    - FIXED certificate generation error caused by ill-placed GlobalSign validation
+
+client-5.2.1.p1 (Windows client bugfix), 9 November 2017
+------------------------
+    Linux client supports: Debian 8 x64, Debian 9 x64, Ubuntu 16.04 (LTS) x64
+    Windows client supports: Windows 7, Windows 8, Windows 10, Windows Server 2012
+    - FIXED KeyTalk Windows client MSI command line installation with RCCD supplied
+
+client-5.2.1, 14 September 2017
+------------------------
+    Linux client supports: Debian 8 x64, Debian 9 x64, Ubuntu 16.04 (LTS) x64
+    Windows client supports: Windows 7, Windows 8, Windows 10, Windows Server 2012
+    - ADDED Check CRL during auto updating of Apache/IIS SSL certificates
+    - ADDED Add self FQDN to the list of users in KeyTalk Windows IIS client configuration UI
+    - ADDED Support for Debian 9 for Linux client
+    - CHANGED KeyTalk Linux client became 64-bit which automatically limits platform support to 64-bit only
+    - CHANGED Dropped support for http proxy on Windows and Linux clients as well as in RCCDs
+    - FIXED KeyTalk Windows IIS Client installation hangs during upgrade
+
+server-5.2.2, 11 August 2017
+--------------------
+    Supports upgrades from v5.2.1
+    Supports import of settings created in v5.2.0-v5.2.2, v4.6.0 and v4.6.2
+
+    Changes:
+    - ADDED Add support for ePKI GlobalSign product
+    - ADDED Add support for IntranetSSL GlobalSign product
+    - ADDED Automatically install system updates and notify admin if reboot required
+    - ADDED Diagnose the absence of Internet connectivity and communicate it via the admin panel UI
+    - CHANGED Ceased to support RSA keys smaller than 2048 bit
+    - FIXED Effectuate saved nameservers immediately without a need for reboot
+    - FIXED Improve usability of nameserver management on the admin panel UI
+    - FIXED Improve performance of querying KeyTalk service from on the admin panel UI
+
+    Known issues:
+        Service-wide GlobalSign SAN configuration is not preserved (emptied) after upgrade and after loading settings from previous versions
+
+server-5.2.1.p1, 5 July 2017
+--------------------
+    Supports import of settings created in v5.2.1, v5.2.1, v5.2.1p1, v4.6.0 and v4.6.2
+    Supports upgrades from v5.2.1
+    - FIXED Importing of settings from v4.6
+    - FIXED Shared settings do not appear in PR because of too large firmware table size
+    - FIXED Too early disappearing wait spinner on PR report page
+    - FIXED Correct permissions for KeyTalk files after loading settings
+
+server-5.2.1, 3 July 2017
+--------------------
+    Supports import of settings created in v5.2.0, v5.2.1, v4.6.0 and v4.6.2
+    - ADDED Allow importing KeyTalk server VM in HyperV and Azure environments (VHD format)
+    - ADDED Show KeyTalk version and IP address for console pre-login welcome message
+    - ADDED /usr/local/bin/keytalk/netconf tool to setup network interfaces
+    - FIXED MySQL SSL connection establishment inconsistency
+
+server-5.2.0, 15 June 2017
+-------------------
+    - FIXED Parse version with empty devstage
+    - ADDED Disallow multiple fw upgrades and settings load to run in parallel
+    - ADDED Show the latest fw upgrade status on the main page of the Web admin panel
+    - ADDED Make SAN field obligatory when generating client-server and WebUI certificates on admin Web panel
+    - ADDED Allow generating 8192-bit RSA CAs from KeyTalk webadmin panel
+    - CHANGED Changed network interface name from 'ens33' set by Ubuntu 16 by default to the traditional 'eth0' to support Azure/Hyper-V
+
+server-5.2.0.a5, 6 June 2017
+-------------------
+    - FIXED Ill-formed HTTP response (not closed) was returned to WebUI admin just before restarting webserver
+    - FIXED Use ISO 3166-1 alpha-2 for country codes used for certificate generation
+    - FIXED Set default VM name during import to "KeyTalk 5"
+    - FIXED Updated WebUI tooltips
+    - FIXED Set server timezone to UTC
+    - CHANGED Set HWSIG for KeyTalk server to 20GB disk, 4 GB RAM and 2 CPUs
+    - CHANGED Removing service from admin Web panel causes automatic removal of the associated authentication connectors and DevID users
+    - CHANGED Removed server-server certificate and key from KeyTalk server certificate tree (HSM communication will then need to be uploaded by an admin)
+    - ADDED Allow configuring SAN for SQLITE authentication modules that will have preference over the service-wide SAN (ported from 4.6.2)
+    - ADDED Extended HWSIG codes with a random generated during app installation (included by default)
+    - ADDED Allow selective download of certificate and/or key from cert&keys page of the Web admin panel
+    - ADDED Allow downloading certificates in DER format from cert&keys page of the Web admin panel
+    - ADDED Allow import 4.6.2 settings incl. GlobalSign configuration and mod_sqlite SAN setting
+    - ADDED Allow regenerating client-server communication cert/key and WebUI cert/key from WebUI admin panel
+    - ADDED Create server firmware for multiple profiles
+    - ADDED Display user-friendly error messages for Db-related errors on the Web admin panel
+    - ADDED Allow KeyTalk server cluster member to automatically discover fw upgrade in the Db and install it
+
+client-5.2.0.p3, 18 May 2017
+-------------------
+    - FIXED Do not use HOME environment variable to retrieve HOME directory on Linux as this may results in inconsistent behavior for sudo calls
+    - FIXED Update KeyTalk client admin installation manuals
+
+client-5.2.0.p2, 17 May 2017
+-------------------
+    - ADDED Collect core dumps for all KeyTalk Windows client applications during PR generation
+    - ADDED More verbose error reporting for KeyTalk IIS client
+    - FIXED misleading logging for cert store API
+
+server-4.6.2.b1 (GlobalSign), 11 May 2017
+---------------------------
+    NOTICE: this version can only be installed by full VM replace; no fw upgrade to this version supported
+    - ADDED Allow configuring SAN for SQLITE authentication modules that will have preference over the service-wide SAN
+    - FIXED Added SSL ciphers to support KeyTalk Windows 7 clients (RCDPv2)
+
+5.2.0.a4, 2 May 2017
+-------------------
+    - CHANGED Migrated KeyTalk server from BSD to Linux
+    - CHANGED Merged DevID into KeyTalk server
+    - FIXED WebUI page is not automatically reloaded in Chrome
+    - ADDED Allow to use GlobalSign for certificate creation
+    - ADDED Included installed KeyTalk CAs into the client-side problem reports
+
+4.6.1 (GlobalSign), 24 April 2017
+-------------------------
+    - ADDED Allow to use GlobalSign for certificate creation
+    - ADDED Log created certificates on CAD including GlobalSign account info when applicable
+
+5.0.0, 25 January 2017 (Windows and Linux clients)
+------------------------
+    - ADDED Allow installing RCCDs from https:// URL with Windows and Linux clients
+    - CHANGED Added support for RCDPv2 and dropped support for RCDPv1 on KeyTalk Windows and Linux clients
+    - FIXED Imported KeyTalk personal certificates are now only owner-readable on Linux (KeyTalk Linux client)
+    - KNOWN ISSUES Proxy is not supported on Windows and Linux clients
+
+4.6.0, 16 June 2016
+------------------------
+    - ADDED New RESTful client-server protocol RCDPv2
+    - FIXED Improved usability when CA tree generation from WebUI takes long
+    - FIXED Blocking behavior of SSL/XML-RPC calls caused incorrect synchronization within a redundancy cluster
+    - FIXED Disallow positive TFC on server service configuration
+
+1.6.0 Signing Portal, 1 June 2016
+--------------------------
+    - ADDED YAML configuration in RCCD files
+
+4.5.1 (Windows client), 31 March 2016
+--------------------------
+    - FIXED Add Windows 10 version detection support
+
+4.5.0 (Windows and Linux client and Signing Portal-1.5.0), 2 March 2016
+--------------------------
+    - ADDED Problem Report generation tool for Linux client
+    - ADDED New RESTful client-server protocol (KEYTALK-377)
+    - FIXED KeyTalk client cannot start when customized from master RCCD only
+
+4.4.5, 17 December 2015 (iOS)
+-----------------------------
+    - FIXED iOS client cannot cope with quotes embedded in RCCD setting values
+    - CHANGED Updated OpenSSL for iOS client to 1.0.2e
+
+4.4.4.p2, 10 December 2015
+--------------------------
+    - FIXED Failure to generate 4K CA tree from WebUI
+    - FIXED Increase LDAP query timeout
+    - CHANGED Updated CA tree with SHA256-based and 4096-bit RSA
+
+4.4.4.p1, 26 November 2015
+------------------------------
+    - FIXED Distorted/out-of-date images on server WebUI
+    - FIXED Binding new authentication module to a service
+    - FIXED Saving server PR
+    - FIXED HAD fail-stop as a result of missing MySQL module configuration
+
+4.4.4, 17 November 2015
+---------------------------
+    - ADDED MySQL authentication module
+    - ADDED A possibility for the server to log both locally and remotely
+        - notice that log configuration will be is reset after fw upgrade from 4.4.3 -> 4.4.4
+    - ADDED Time correction for server remote logging
+    - ADDED Allow creating RCCD BLOBs from KeyTalk WebUI to be signed on Signing Portal
+    - ADDED KeyTalk client for Linux server (Apache)
+    - FIXED Windows client: incorrect handling of empty Hot URL from RCCD
+    - FIXED Error authenticating with iOS client against keytalk.com/tldemo
+    - CHANGED iOS Client supports iOS 8 and iOS 9 (added support for iOS 9, dropped support for iOS 7)
+
+4.4.3, 21 May 2015
+----------------------------
+    - ADDED KeyTalk client for Windows server: IIS support
+    - ADDED HSM to store private keys
+    - ADDED DevID connector for Backend Authentication daemon
+    - ADDED A possibility to specify more than 5 DNS mappings on WebUI
+    - CHANGED Updated clients to OpenSSL-1.0.2a
+    - CHANGED Use LibreSSL-2.1.6 i.o. OpenSSL on the server
+    - CHANGED "Resept" to "kt" in log and PEM file names created by KeyTalk Windows Client
+    - FIXED KeyTalk client provides misleading  diagnostics when KeyTalk IE add-on is not installed
+    - FIXED KeyTalk client horribly scales on ultrabook screen
+    - iOS client changes:
+      - FIXED Bad iOS client usability: "Communication error" appears when canceling on user screen
+      - FIXED iOS client: importing RCCDs from different providers the same set of services only shows the services of the latest imported provider
+      - FIXED iOS client removes existing services during RCCD import
+      - FIXED iOS client: incorrect handling of empty Hot URL from RCCD
+      - CHANGED Updated iOS client OpenSSL version to 1.0.2d
+
+4.4.2.p1, 7 January 2015. Patch for 4.4.2
+----------------------------
+    - CHANGED default demo license
+
+4.4.2, 18 December 2014
+----------------------------
+    - ADDED CRL support
+    - ADDED Allow for KeyTalk advanced constraint certificate extensions
+    - ADDED Improve usability of RCCD importing for Windows and Linux clients
+    - ADDED possibility to block HWSIG made from zero-formula
+    - ADDED "backup certificates for DevID" on certificates WebUI page
+    - ADDED Allow changing order of LDAP and RADIUS servers on KT WebUI
+    - ADDED Host ssh public keys HWSIG component for Linux clients
+    - CHANGED Windows XP and Vista are not longer supported by KeyTalk client
+    - FIXED Allow installation of KeyTalk Linux client via sudo
+    - FIXED Allow non-root to use and customize KeyTalk Linux client
+    - FIXED iOS client could not handle blank service URL
+    - FIXED KeyTalk Configuration Manager does not understand HTTP redirects
+    - FIXED Windows client fails to distinguish providers that differ in character case only
+
+4.4.1, 27 November 2014. Hotfix for 4.4.0
+----------------------------
+    - ADDED Improve usability of RCCD importing on iOS client
+    - CHANGED Ended support for iOS versions 5 and 6. This means that the currently supported versions are iOS 7 and 8
+    - CHANGED Hide provider IP settings from service selection view
+    - FIXED iOS client cannot open formarmers hoturl in the embedded browser
+
+4.4.1, 16 October 2014. Hotfix for 4.4.0
+----------------------------
+    - FIXED Disabled SSL3 on the webserver to protect from POODLE attacks (CVE-2014-3566)
+
+4.4.0.p1, 16 September 2014. Patch 1 for 4.4.0
+----------------------------
+    - CHANGED Updated RCCD location in SDK manual
+    - CHANGED Added sample CR configuration file to KeyTalk client distributions
+    - FIXED KeyTalk client does not use http_proxy environment variable any more
+
+4.4.0, 11 September 2014
+---------------------------
+    - ADDED Linux SDK and Windows command-line client SDK
+    - ADDED Allow for transaction-based license controlling max certificates issued
+    - ADDED Perfect Forwarding Secrecy for client-server protocol
+    - ADDED Allow for uninstalling of RCCDs with KeyTalk Windows client configuration manager
+    - ADDED Allow for reporting problem from KeyTalk client
+    - FIXED OpenSSL vulnerability CVE-2014-0224
+    - FIXED Change the visual RESEPT reference in the SigningPortal to KeyTalk
+    - FIXED Non-ASCII usernames are not correctly imported from RCCD by iOS client
+
+4.4.0.b2, 5 June 2014, beta 2 of basic Linux Client of KeyTalk-4.4.0
+---------------------------
+    - ADDED KeyTalk WebUI logout function
+    - FIXED  DEVID should only register users authenticated by KeyTalk server
+
+4.4.0.b1, 28 May 2014, beta 1 of basic Linux Client of KeyTalk-4.4.0
+---------------------------
+    - FIXED IE failstop
+    - FIXED Heartbleed SSL exploit (CVE-2014-0160)
+    - FIXED Popup to close IE now correctly appears on top of installer window
+    - FIXED Disallowed cipher downgrade attack
+    - FIXED Failstop of authd daemon when binary data is injected in password
+    - CHANGED Normalize incoming server packets before filtering
+    - CHANGED Updated HTTP Server Version
+
+4.3.3.p3, 24 July 2014 Security patch for KeyTalk client 4.3.3
+---------------------------
+    - CHANGED updated libcurl for Windows client
+
+4.3.3.p2, 16 Apr 2014 Security patch for KeyTalk-4.3.3
+---------------------------
+    - FIXED IE failstop
+    - FIXED Popup to close IE now correctly appears on top of the installer window
+
+4.3.3.p1, 10 Apr 2014 Security patch for KeyTalk-4.3.3
+---------------------------
+    - FIXED Heartbleed SSL exploit (CVE-2014-0160)
+
+4.3.3, 28 Feb 2014
+---------------------------
+    - ADDED SHA2 as default signature for CA tree
+    - ADDED possibility to change server URL from iOS client
+    - CHANGED Restart CAD whenever a relevant cert/key gets uploaded, restored or generated
+    - FIXED Country value is lost when configuring certificate tree generation page
+    - FIXED Cannot change AD password with KeyTalk client when username formed as user@domain
+    - FIXED Weak KeyTalk webserver SSL Ciphers
+    - FIXED Incomplete Binary Hardening on Windows Client Executables
+    - FIXED Saving Local DNS Lookup Database settings will empty Name Server list
+    - FIXED Weak Diffie-Hellman handshake due to Short Key
+    - FIXED Outdated HTTP Server Version
+    - FIXED Session-Encrypted Data is Not Authenticated (no MAC)
+    - FIXED Predictable IV Used for Session-Encrypted Data
+    - FIXED KeyTalk client UI does not properly scale
+    - FIXED Upgrade OpenBSD 5.0 -> 5.3 on KeyTalk server
+
+4.3.2, 29 Nov 2013
+---------------------------
+    - FIXED Client-server protocol does not correctly handle credentials containing some non-ASCIIs
+    - FIXED Change key color in the KeyTalk client shortcut to white
+    - FIXED Allow WebUI to be started without IPv6
+    - FIXED Management interface does not start when no connectivity for external interface available
+    - FIXED Displaying bind password on KeyTalk LDAP Auth module page
+    - ADDED Full support for RADIUS SecurID protocol
+    - ADDED Allow changing hostname from WebUI
+    - ADDED Allow editing local DNS Db from WebUI
+    - ADDED Both side clients-server RCDP version negotiation
+    - CHANGED Only link-local IPv6 are included in default image
+
+4.3.1, 5 Nov 2013
+---------------------------
+    - FIXED [Usability] Not all information fits config manager screen
+    - ADDED Respect "user must change password at next logon" AD setting
+    - ADDED Add support for SCSI disks to enable KT VM images to function in ESX environment
+
+4.3.0, 15 Oct 2013
+---------------------------
+    - FIXED   Misleading losing of focus by IE client
+    - ADDED   Download package KeyTalk configuration
+    - ADDED   Client compatibility Windows server 2003/2008/2012
+    - CHANGED Rebranding KeyMaster Client to KeyTalk
+    - CHANGED Rebranding KeyMaster Client tools to KeyTalk
+    - CHANGED Rebranding KeyMaster Server to KeyTalk
+
+4.3.0.a1, 2 Oct 2013
+---------------------------
+    - FIXED Opening ntp server page redirects to home when browsing with Google Chrome browser
+    - FIXED More descriptive error needed on WebUI when the imported license is signed with incorrect cert
+    - FIXED No way to select user during first phase of CR authentication
+    - ADDED Virtualize KT server to run on WMWare
+    - ADDED Replicate more state between redundant RESEPT Servers in HA setup
+    - ADDED possibility to make binary backendauthd release
+    - ADDED Add “wmic bios get serialnumber” to the list of Windows desktop client HWID components
+    - ADDED Password expiration support for LDAP/AD
+    - ADDED KM Client shall support Windows 8
+    - ADDED DEVID reference to user-known device identity
+    - ADDED KeyMaster client LDAP/AD password change support
+    - ADDED Support for RADIUS CR and OTP authentication including EAP-TTLS, PEAP, EAP-MD5, LEAP, EAP-MSCHAPv2, EAP-GTC, EAP-TLS, SIM/AKA and OTP
+    - CHANGED Question mark in URL doesn't trigger RESEPT Client
+    - CHANGED Upgrade client without reinstall
+
+4.2.0.p2
+---------------------------
+    - CHANGED Changed default application and installer logos to KeyTalk
+
+4.2.0.p1
+---------------------------
+    - FIXED Error when restoring configuration
+
+4.2.0
+---------------------------
+    - ADDED Production license keys. Delivery package now can be made in 2 variants: with production (default) or demo license keys
+
+4.2.0.b3
+---------------------------
+    - FIXED It was possible to install RESEPT Client 4.2 on top of the already installed client version 4.3+  which resulted in corrupted installation since both products installed side-by-side
+
+
+4.2.0.b2
+---------------------------
+    - FIXED Error changing provider in multi-provider setup
+    - CHANGED Question mark in URL doesn't trigger RESEPT Client
+
+
+4.2.0.b1
+---------------------------
+    - CHANGED Ported HA mechanism from DEVID to RESEPT Server
+
+
+4.2.0.a1
+---------------------------
+    - FIXED Ambiguity with LDAP bind errors caused by invalid DN
+    - FIXED LDAP secure connection failing for AD
+    - ADDED Advanced logged in users information
+    - ADDED Client message to user on successful login
+    - ADDED Add admin GUI action confirmation button
+    - ADDED A possibility to do key ceremony via WebUI
+    - ADDED button to remove 10% of the oldest logged-in users to WebUI
+    - ADDED Show RESEPT Version on RESEPT Client
+    - ADDED Suppport for wildcarded subdomains in service URL
+    - ADDED Check for DNS validity
+    - ADDED Allow for per-NIC gateway configuration
+    - ADDED Web-partner interface for RCCD & license file creation
+    - CHANGED Descriptive names of cert/key files
+    - CHANGED Make more specific names for files downloaded from RESEPT Server to easier identifying them by an admin
+    - CHANGED BHO doesn't check service of certificates, just the provider
+
+
+4.1.0
+---------------------------
+    - ADDED Possibility to upgrade the system by uploading the image to the server
+    - ADDED WebUI->main statistics on logged-in users
+
+
+

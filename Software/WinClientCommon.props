@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <BOOST_VERSION_DIR>boost-1.64</BOOST_VERSION_DIR>
+    <BOOST_LIB_DIR>$(BOOST_VERSION_DIR)\bin.v2\libs</BOOST_LIB_DIR>
+    <BOOST_INCLUDE_DIR>$(BOOST_VERSION_DIR)</BOOST_INCLUDE_DIR>
+    <BOOST_CHRONO_LIB_DIR>$(BOOST_LIB_DIR)\chrono\msvc-$(VisualStudioVersion)</BOOST_CHRONO_LIB_DIR>
+    <BOOST_DATETIME_LIB_DIR>$(BOOST_LIB_DIR)\date_time\msvc-$(VisualStudioVersion)</BOOST_DATETIME_LIB_DIR>
+    <BOOST_FILESYSTEM_LIB_DIR>$(BOOST_LIB_DIR)\filesystem\msvc-$(VisualStudioVersion)</BOOST_FILESYSTEM_LIB_DIR>
+    <BOOST_PROGRAMOPTIONS_LIB_DIR>$(BOOST_LIB_DIR)\program_options\msvc-$(VisualStudioVersion)</BOOST_PROGRAMOPTIONS_LIB_DIR>
+    <BOOST_REGEX_LIB_DIR>$(BOOST_LIB_DIR)\regex\msvc-$(VisualStudioVersion)</BOOST_REGEX_LIB_DIR>
+    <BOOST_SERIALIZE_LIB_DIR>$(BOOST_LIB_DIR)\serialization\msvc-$(VisualStudioVersion)</BOOST_SERIALIZE_LIB_DIR>
+    <BOOST_SYSTEM_LIB_DIR>$(BOOST_LIB_DIR)\system\msvc-$(VisualStudioVersion)</BOOST_SYSTEM_LIB_DIR>
+    <BOOST_THREAD_LIB_DIR>$(BOOST_LIB_DIR)\thread\msvc-$(VisualStudioVersion)</BOOST_THREAD_LIB_DIR>
+    <CURL_LIB_VERSION_DIR>curl-7.54</CURL_LIB_VERSION_DIR>
+    <CURL_INCLUDE_DIR>$(CURL_LIB_VERSION_DIR)\include\win32</CURL_INCLUDE_DIR>
+    <CURL_LIB_DIR>$(CURL_LIB_VERSION_DIR)\lib\win32\shared_crt</CURL_LIB_DIR>
+    <LIBCONFIG_LIB_VERSION_DIR>libconfig-1.5</LIBCONFIG_LIB_VERSION_DIR>
+    <LIBCONFIG_INCLUDE_DIR>$(LIBCONFIG_LIB_VERSION_DIR)</LIBCONFIG_INCLUDE_DIR>
+    <LIBCONFIG_LIB_DIR>$(LIBCONFIG_LIB_VERSION_DIR)\lib\win32\shared_crt</LIBCONFIG_LIB_DIR>
+    <YAMLCPP_LIB_VERSION_DIR>yaml-cpp-0.5.3</YAMLCPP_LIB_VERSION_DIR>
+    <YAMLCPP_INCLUDE_DIR>$(YAMLCPP_LIB_VERSION_DIR)\include</YAMLCPP_INCLUDE_DIR>
+    <YAMLCPP_LIB_DIR>$(YAMLCPP_LIB_VERSION_DIR)\lib\win32\shared_crt</YAMLCPP_LIB_DIR>
+    <OPENSSL_LIB_VERSION_DIR>openssl-1.0.2</OPENSSL_LIB_VERSION_DIR>
+    <OPENSSL_INCLUDE_DIR>$(OPENSSL_LIB_VERSION_DIR)\inc32</OPENSSL_INCLUDE_DIR>
+    <OPENSSL_LIB_DIR>$(OPENSSL_LIB_VERSION_DIR)\lib\win32\shared_crt</OPENSSL_LIB_DIR>
+    <ZLIB_LIB_VERSION_DIR>zlib-1.2.8</ZLIB_LIB_VERSION_DIR>
+    <ZLIB_INCLUDE_DIR>$(ZLIB_LIB_VERSION_DIR)</ZLIB_INCLUDE_DIR>
+    <ZLIB_LIB_DIR>$(ZLIB_LIB_VERSION_DIR)\lib\win32</ZLIB_LIB_DIR>
+    <WIX_VERSION_DIR>wix-3.11</WIX_VERSION_DIR>
+  </PropertyGroup>
+  <PropertyGroup>
+    <_PropertySheetDisplayName>KeyTalk Windows Client Common</_PropertySheetDisplayName>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="BOOST_VERSION_DIR">
+      <Value>$(BOOST_VERSION_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_LIB_DIR">
+      <Value>$(BOOST_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_INCLUDE_DIR">
+      <Value>$(BOOST_INCLUDE_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_CHRONO_LIB_DIR">
+      <Value>$(BOOST_CHRONO_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_DATETIME_LIB_DIR">
+      <Value>$(BOOST_DATETIME_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_FILESYSTEM_LIB_DIR">
+      <Value>$(BOOST_FILESYSTEM_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_PROGRAMOPTIONS_LIB_DIR">
+      <Value>$(BOOST_PROGRAMOPTIONS_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_REGEX_LIB_DIR">
+      <Value>$(BOOST_REGEX_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_SERIALIZE_LIB_DIR">
+      <Value>$(BOOST_SERIALIZE_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_SYSTEM_LIB_DIR">
+      <Value>$(BOOST_SYSTEM_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_THREAD_LIB_DIR">
+      <Value>$(BOOST_THREAD_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="CURL_LIB_VERSION_DIR">
+      <Value>$(CURL_LIB_VERSION_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="CURL_INCLUDE_DIR">
+      <Value>$(CURL_INCLUDE_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="CURL_LIB_DIR">
+      <Value>$(CURL_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="LIBCONFIG_LIB_VERSION_DIR">
+      <Value>$(LIBCONFIG_LIB_VERSION_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="LIBCONFIG_INCLUDE_DIR">
+      <Value>$(LIBCONFIG_INCLUDE_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="LIBCONFIG_LIB_DIR">
+      <Value>$(LIBCONFIG_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="YAMLCPP_LIB_VERSION_DIR">
+      <Value>$(YAMLCPP_LIB_VERSION_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="YAMLCPP_INCLUDE_DIR">
+      <Value>$(YAMLCPP_INCLUDE_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="YAMLCPP_LIB_DIR">
+      <Value>$(YAMLCPP_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="OPENSSL_LIB_VERSION_DIR">
+      <Value>$(OPENSSL_LIB_VERSION_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="OPENSSL_INCLUDE_DIR">
+      <Value>$(OPENSSL_INCLUDE_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="OPENSSL_LIB_DIR">
+      <Value>$(OPENSSL_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="ZLIB_LIB_VERSION_DIR">
+      <Value>$(ZLIB_LIB_VERSION_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="ZLIB_INCLUDE_DIR">
+      <Value>$(ZLIB_INCLUDE_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="ZLIB_LIB_DIR">
+      <Value>$(ZLIB_LIB_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="WIX_VERSION_DIR">
+      <Value>$(WIX_VERSION_DIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

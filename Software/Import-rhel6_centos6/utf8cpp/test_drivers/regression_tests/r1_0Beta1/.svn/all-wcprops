@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/p/utfcpp/code/!svn/ver/120/v2_0/test_drivers/regression_tests/r1_0Beta1
+END
+basic_functionality.h
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/p/utfcpp/code/!svn/ver/60/v2_0/test_drivers/regression_tests/r1_0Beta1/basic_functionality.h
+END
+invalidutf8.h
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/p/utfcpp/code/!svn/ver/120/v2_0/test_drivers/regression_tests/r1_0Beta1/invalidutf8.h
+END
