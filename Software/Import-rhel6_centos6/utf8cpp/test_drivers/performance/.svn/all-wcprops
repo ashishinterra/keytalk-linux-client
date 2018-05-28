@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/p/utfcpp/code/!svn/ver/125/v2_0/test_drivers/performance
+END
+iconvtest.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/utfcpp/code/!svn/ver/123/v2_0/test_drivers/performance/iconvtest.cpp
+END
+win32.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/utfcpp/code/!svn/ver/115/v2_0/test_drivers/performance/win32.cpp
+END
+timer.h
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/utfcpp/code/!svn/ver/115/v2_0/test_drivers/performance/timer.h
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/utfcpp/code/!svn/ver/125/v2_0/test_drivers/performance/Makefile
+END

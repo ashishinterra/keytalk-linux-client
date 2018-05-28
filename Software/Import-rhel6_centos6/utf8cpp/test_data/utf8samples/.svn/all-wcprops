@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/p/utfcpp/code/!svn/ver/60/v2_0/test_data/utf8samples
+END
+big.txt
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/utfcpp/code/!svn/ver/60/v2_0/test_data/utf8samples/big.txt
+END
+quickbrown.txt
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/utfcpp/code/!svn/ver/60/v2_0/test_data/utf8samples/quickbrown.txt
+END
+UTF-8-demo.txt
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/utfcpp/code/!svn/ver/60/v2_0/test_data/utf8samples/UTF-8-demo.txt
+END
+Unicode_transcriptions.html
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/p/utfcpp/code/!svn/ver/60/v2_0/test_data/utf8samples/Unicode_transcriptions.html
+END
