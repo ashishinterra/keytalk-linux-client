@@ -127,7 +127,7 @@ Clone
 Install
 
     # cd /keytalk/Software/Client/Projects/
-    # make clean && make && make install
+    # ./run_makefile.sh
 
  Test
 
@@ -178,7 +178,7 @@ Clone
 Install
 
     # cd /keytalk/Software/Client/Projects/
-    # make clean && make && make install
+    # ./run_makefile.sh
 
  Test
 
